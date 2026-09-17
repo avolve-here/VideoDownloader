@@ -103,7 +103,7 @@ async function analyzeMedia() {
     try {
 
         const response = await fetch(
-            "http://https://nuvexa-videodownloader.onrender.com/api/analyze",
+            "https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/analyze",
             {
                 method: "POST",
                 headers: {
@@ -222,7 +222,7 @@ async function loadPreview(previewUrl, thumbnail) {
     try {
 
         const sourceUrl =
-            `http://https://nuvexa-videodownloader.onrender.com/api/preview?url=${encodeURIComponent(
+            `https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/preview?url=${encodeURIComponent(
                 urlInput.value.trim()
             )}`;
 
@@ -547,7 +547,7 @@ async function downloadFormat(format, clickedButton) {
     try {
 
         const response = await fetch(
-            "http://https://nuvexa-videodownloader.onrender.com/api/download",
+            "https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download",
             {
                 method: "POST",
 
@@ -619,7 +619,7 @@ async function monitorDownload(
         await sleep(700);
 
         const response = await fetch(
-            `http://https://nuvexa-videodownloader.onrender.com/api/download-status/${jobId}`
+            `https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download-status/${jobId}`
         );
 
         const data = await response.json();
@@ -692,7 +692,7 @@ async function monitorDownload(
 async function fetchCompletedFile(jobId) {
 
     const response = await fetch(
-        `http://https://nuvexa-videodownloader.onrender.com/api/download-file/${jobId}`
+        `https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download-file/${jobId}`
     );
 
     if (!response.ok) {
@@ -788,7 +788,7 @@ async function downloadAudio(
     try {
 
         const response = await fetch(
-            "http://https://nuvexa-videodownloader.onrender.com/api/download-audio",
+            "https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download-audio",
             {
                 method: "POST",
 
