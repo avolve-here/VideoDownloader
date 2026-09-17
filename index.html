@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nuvexa Video Downloader - Free Video & Audio Downloader</title>
+
+    <meta
+        name="description"
+        content="Simple and fast video and audio downloader."
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <a href="#" class="logo">
+                Nuvexa
+            </a>
+
+            <nav class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#downloader">Downloader</a>
+                <a href="#supported">Supported Sites</a>
+                <a href="#about">About</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+    <main id="home">
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <h1>
+                    Download any videos & audio
+                    <span>easily.</span>
+                </h1>
+
+                <p>
+                    Paste a supported media URL, choose your quality,
+                    and download it in seconds.
+                </p>
+
+                <div class="supported-inline">
+                    <span>YouTube</span>
+                    <span>Instagram</span>
+                    <span>TikTok</span>
+                    <span>Reddit</span>
+                    <span>X</span>
+                    <span>Facebook</span>
+                    <span>Pinterest</span>
+                    <span>Vimeo</span>
+                </div>
+
+
+                <!-- URL SEARCH -->
+                <div class="url-box" id="downloader">
+
+    <input
+        type="text"
+        id="urlInput"
+        placeholder="Paste Media URL; Instagram, Reddit, YouTube, X..."
+        autocomplete="off"
+    >
+
+    <button
+        type="button"
+        id="pasteBtn"
+        class="paste-button"
+    >
+        Paste
+    </button>
+
+    <button
+        type="button"
+        id="analyzeBtn"
+    >
+        Analyze
+    </button>
+
+</div>
+
+                <p class="input-note"></p>
+
+            </div>
+
+        </section>
+
+
+        <!-- DOWNLOAD RESULTS -->
+        <!-- Hidden until Analyze succeeds -->
+        <section
+            class="results-section"
+            id="results"
+            style="display: none;"
+        >
+
+            <div class="section-container">
+
+                <div class="section-heading results-heading">
+
+                    <div>
+                        <span>DOWNLOAD</span>
+
+                        <h2>
+                            Choose your format
+                        </h2>
+                    </div>
+
+                    <!-- Back to URL search -->
+                    <button
+                        class="close-results"
+                        id="closeResults"
+                        type="button"
+                        aria-label="Back to search"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div class="media-card">
+
+                    <!-- VIDEO PREVIEW -->
+                    <div class="preview-player">
+
+                        <video
+                            id="mediaPlayer"
+                            controls
+                            playsinline
+                            preload="metadata"
+                        ></video>
+
+                        <div
+                            class="player-placeholder"
+                            id="playerPlaceholder"
+                        >
+
+                            <div class="player-placeholder-icon">
+                                ▶
+                            </div>
+
+                            <span>
+                                Preview will appear here
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MEDIA INFO -->
+                    <div class="media-info">
+
+                        <h3 id="mediaTitle">
+                            Media title
+                        </h3>
+
+                        <p id="mediaDetails">
+                            Media details
+                        </p>
+
+                    </div>
+
+
+                    <!-- VIDEO DOWNLOADS -->
+                    <div class="download-group">
+
+                        <div class="group-title">
+
+                            <div>
+                                <h3>Video</h3>
+
+                                <span>
+                                    Choose a video quality
+                                </span>
+                            </div>
+
+                            <strong>
+                                MP4
+                            </strong>
+
+                        </div>
+
+                        <div class="download-options">
+                            <!-- Generated by JavaScript -->
+                        </div>
+
+                    </div>
+
+
+                    <!-- AUDIO DOWNLOADS -->
+                    <div class="download-group">
+
+                        <div class="group-title">
+
+                            <div>
+                                <h3>Audio</h3>
+
+                                <span>
+                                    Extract audio from the media
+                                </span>
+                            </div>
+
+                            <strong>
+                                MP3
+                            </strong>
+
+                        </div>
+
+                        <div class="download-options">
+                            <!-- Generated by JavaScript -->
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ADVERTISEMENT -->
+        <section class="ad-section">
+
+            <div class="ad-container">
+
+                <span>
+                    ADVERTISEMENT
+                </span>
+
+                <div class="ad-placeholder">
+                    728 × 180
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUPPORTED SITES -->
+        <section
+            class="supported-section"
+            id="supported"
+        >
+
+            <div class="section-container">
+
+                <div class="section-heading">
+
+                    <span>
+                        COMPATIBILITY
+                    </span>
+
+                    <h2>
+                        Supported platforms
+                    </h2>
+
+                </div>
+
+
+                <div class="platform-grid">
+
+                    <div class="platform-card">
+                        <strong>YouTube</strong>
+                        <span>Video & audio</span>
+                    </div>
+
+                    <div class="platform-card">
+                        <strong>Instagram</strong>
+                        <span>Supported media</span>
+                    </div>
+
+                    <div class="platform-card">
+                        <strong>TikTok</strong>
+                        <span>Supported media</span>
+                    </div>
+
+                    <div class="platform-card">
+                        <strong>Direct URLs</strong>
+                        <span>Media files</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ABOUT -->
+        <section
+            class="about-section"
+            id="about"
+        >
+
+            <div class="section-container about-content">
+
+                <span>
+                    ABOUT
+                </span>
+
+                <h2>
+                    Simple tools without the clutter.
+                </h2>
+
+                <p>
+                    Nuvexa Video Downloader is designed around one idea:
+                    paste a link, select what you need,
+                    and download it.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+
+                <strong>
+                    Nuvexa
+                </strong>
+
+                <span>
+                    Simple, fast and free.
+                </span>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="privacy.html">
+                    Privacy Policy
+                </a>
+
+                <a href="terms.html">
+                    Terms of Service
+                </a>
+
+                <a href="copyright.html">
+                    DMCA / Copyright
+                </a>
+
+                <a href="acceptable-use.html">
+                    Acceptable Use
+                </a>
+
+                <a href="cookies.html">
+                    Cookie Policy
+                </a>
+
+                <a href="disclaimer.html">
+                    Disclaimer
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
+            </div>
+
+
+            <div class="footer-bottom">
+
+                <span>
+                    © 2026 Nuvexa. All rights reserved.
+                </span>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
