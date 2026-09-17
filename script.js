@@ -1,6 +1,9 @@
 const analyzeBtn = document.getElementById("analyzeBtn");
 const urlInput = document.getElementById("urlInput");
 const pasteBtn = document.getElementById("pasteBtn");
+
+const API_BASE = "https://nuvexa-videodownloader.onrender.com";
+
 pasteBtn.addEventListener("click", async () => {
     try {
         const text = await navigator.clipboard.readText();
@@ -103,7 +106,7 @@ async function analyzeMedia() {
     try {
 
         const response = await fetch(
-            "https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/analyze",
+            `${API_BASE}/api/analyze`,
             {
                 method: "POST",
                 headers: {
@@ -147,18 +150,10 @@ async function analyzeMedia() {
         mediaDetails.textContent =
             details.join(" • ");
 
-        // ====================================================
-        // LOAD PREVIEW
-        // ====================================================
-
         loadPreview(
             data.preview_url,
             data.thumbnail
         );
-
-        // ====================================================
-        // RENDER DOWNLOAD OPTIONS
-        // ====================================================
 
         renderVideoOptions(currentFormats);
         renderAudioOptions();
@@ -173,7 +168,10 @@ async function analyzeMedia() {
 
     } catch (error) {
 
-        console.error("Nuvexa analyze error:", error);
+        console.error(
+            "Nuvexa analyze error:",
+            error
+        );
 
         showError(
             error.message ||
@@ -222,7 +220,7 @@ async function loadPreview(previewUrl, thumbnail) {
     try {
 
         const sourceUrl =
-            `https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/preview?url=${encodeURIComponent(
+            `${API_BASE}/api/preview?url=${encodeURIComponent(
                 urlInput.value.trim()
             )}`;
 
@@ -316,7 +314,6 @@ function renderVideoOptions(formats) {
 
     videoContainer.innerHTML = "";
 
-    // Remove duplicate qualities
     const uniqueFormats = [];
     const seenHeights = new Set();
 
@@ -340,19 +337,16 @@ function renderVideoOptions(formats) {
         return;
     }
 
-    // Show 360p and above
     const visibleFormats =
         uniqueFormats.filter(
             format => format.height >= 360
         );
 
-    // Hide below 360p
     const hiddenFormats =
         uniqueFormats.filter(
             format => format.height < 360
         );
 
-    // Create main options
     visibleFormats.forEach(format => {
 
         const button =
@@ -361,7 +355,6 @@ function renderVideoOptions(formats) {
         videoContainer.appendChild(button);
     });
 
-    // More button
     if (hiddenFormats.length > 0) {
 
         const moreButton =
@@ -547,7 +540,7 @@ async function downloadFormat(format, clickedButton) {
     try {
 
         const response = await fetch(
-            "https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download",
+            `${API_BASE}/api/download`,
             {
                 method: "POST",
 
@@ -619,7 +612,7 @@ async function monitorDownload(
         await sleep(700);
 
         const response = await fetch(
-            `https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download-status/${jobId}`
+            `${API_BASE}/api/download-status/${jobId}`
         );
 
         const data = await response.json();
@@ -692,7 +685,7 @@ async function monitorDownload(
 async function fetchCompletedFile(jobId) {
 
     const response = await fetch(
-        `https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download-file/${jobId}`
+        `${API_BASE}/api/download-file/${jobId}`
     );
 
     if (!response.ok) {
@@ -788,7 +781,7 @@ async function downloadAudio(
     try {
 
         const response = await fetch(
-            "https://nuvexa-videodownloader.onrender.com://nuvexa-videodownloader.onrender.com/api/download-audio",
+            `${API_BASE}/api/download-audio`,
             {
                 method: "POST",
 
@@ -1036,7 +1029,10 @@ function sleep(milliseconds) {
 
 function showError(message) {
 
-    console.error("Nuvexa error:", message);
+    console.error(
+        "Nuvexa error:",
+        message
+    );
 
     alert(message);
 
