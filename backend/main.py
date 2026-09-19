@@ -93,6 +93,11 @@ def add_cookie_file(ydl_options):
         "path": "/root/.deno/bin/deno"
     }
 }
+    ydl_options["extractor_args"] = {
+        "youtubepot-bgutilhttp": {
+            "base_url": "http://127.0.0.1:4416"
+        }
+    }
 
     return ydl_options
 

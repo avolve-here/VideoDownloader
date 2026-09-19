@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 .env
 cookies.txt
+
+# bgutil PO Token provider generated files
+bgutil-ytdlp-pot-provider/server/node_modules/
+bgutil-ytdlp-pot-provider/server/build/
+bgutil-ytdlp-pot-provider/server/tsconfig.tsbuildinfo
