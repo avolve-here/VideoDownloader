@@ -68,6 +68,18 @@ if os.path.exists(LOCAL_FFMPEG):
 else:
     FFMPEG_LOCATION = shutil.which("ffmpeg")
 
+# ============================================================
+# YOUTUBE COOKIES
+# ============================================================
+RENDER_COOKIES_FILE = "/etc/secrets/cookies.txt"
+
+
+def add_cookie_file(ydl_options):
+    if os.path.isfile(RENDER_COOKIES_FILE):
+        ydl_options["cookiefile"] = RENDER_COOKIES_FILE
+
+    return ydl_options
+
 
 # ============================================================
 # DOWNLOAD JOB STORAGE
@@ -235,6 +247,7 @@ def preview_media(url: str):
 
         "merge_output_format": "mp4",
     }
+    ydl_options = add_cookie_file(ydl_options)
 
     try:
 
@@ -335,6 +348,8 @@ def analyze_media(request: AnalyzeRequest):
             "skip_download": True,
             "noplaylist": True,
         }
+        ydl_options = add_cookie_file(ydl_options)
+    
 
         with YoutubeDL(ydl_options) as ydl:
 
@@ -591,6 +606,7 @@ def process_video_download(
             progress_hook
         ],
     }
+    ydl_options = add_cookie_file(ydl_options)
 
     try:
 
@@ -935,6 +951,7 @@ def download_audio(
             }
         ],
     }
+    ydl_options = add_cookie_file(ydl_options)
 
     try:
 
