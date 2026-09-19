@@ -266,8 +266,18 @@ def favicon():
 
 @app.get("/api/health")
 def health():
+    cookie_exists = os.path.isfile(RENDER_COOKIES_FILE)
+
+    cookie_size = (
+        os.path.getsize(RENDER_COOKIES_FILE)
+        if cookie_exists
+        else 0
+    )
+
     return {
-        "status": "healthy"
+        "status": "healthy",
+        "cookie_file_exists": cookie_exists,
+        "cookie_file_size": cookie_size
     }
 
 
