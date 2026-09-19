@@ -1,36 +1,24 @@
-
-
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from yt_dlp import YoutubeDL
-
 import os
 import shutil
 import tempfile
 import threading
 import uuid
-
 from starlette.background import BackgroundTask
 
+
+# ============================================================
+# APP
+# ============================================================
 
 app = FastAPI(
     title="Nuvexa Video Downloader API",
     version="1.0.0"
-)
-
-
-# ============================================================
-# CORS
-# ============================================================
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 
@@ -53,6 +41,19 @@ class AudioDownloadRequest(BaseModel):
 
 
 # ============================================================
+# CORS
+# ============================================================
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# ============================================================
 # FFMPEG
 # ============================================================
 
@@ -68,9 +69,11 @@ if os.path.exists(LOCAL_FFMPEG):
 else:
     FFMPEG_LOCATION = shutil.which("ffmpeg")
 
+
 # ============================================================
 # YOUTUBE COOKIES
 # ============================================================
+
 RENDER_COOKIES_FILE = "/etc/secrets/cookies.txt"
 
 
@@ -88,11 +91,14 @@ def add_cookie_file(ydl_options):
 
         ydl_options["cookiefile"] = writable_cookie_file
 
+    # YouTube JavaScript challenge solving
     ydl_options["js_runtimes"] = {
-    "deno": {
-        "path": "/root/.deno/bin/deno"
+        "deno": {
+            "path": "/root/.deno/bin/deno"
+        }
     }
-}
+
+    # YouTube PO Token provider
     ydl_options["extractor_args"] = {
         "youtubepot-bgutilhttp": {
             "base_url": "http://127.0.0.1:4416"
@@ -111,11 +117,9 @@ download_jobs_lock = threading.Lock()
 
 
 def create_job():
-
     job_id = str(uuid.uuid4())
 
     with download_jobs_lock:
-
         download_jobs[job_id] = {
             "status": "starting",
             "progress": 0,
@@ -128,26 +132,16 @@ def create_job():
 
 
 def update_job(job_id, **values):
-
     with download_jobs_lock:
-
         if job_id in download_jobs:
-
-            download_jobs[job_id].update(
-                values
-            )
+            download_jobs[job_id].update(values)
 
 
 def get_job(job_id):
-
     with download_jobs_lock:
-
-        job = download_jobs.get(
-            job_id
-        )
+        job = download_jobs.get(job_id)
 
         if not job:
-
             return None
 
         return dict(job)
@@ -158,13 +152,10 @@ def get_job(job_id):
 # ============================================================
 
 def create_progress_hook(job_id):
-
     def progress_hook(data):
-
         status = data.get("status")
 
         if status == "downloading":
-
             downloaded = data.get(
                 "downloaded_bytes",
                 0
@@ -181,7 +172,6 @@ def create_progress_hook(job_id):
             percentage = 0
 
             if total:
-
                 percentage = int(
                     (downloaded / total) * 100
                 )
@@ -198,7 +188,6 @@ def create_progress_hook(job_id):
             )
 
         elif status == "finished":
-
             update_job(
                 job_id,
                 status="merging",
@@ -214,19 +203,41 @@ def create_progress_hook(job_id):
 
 @app.get("/")
 def home():
+    return FileResponse(
+        "index.html",
+        media_type="text/html"
+    )
 
-    return {
-        "status": "online",
-        "message": "Nuvexa Video Downloader API is running"
-    }
+
+@app.get("/robots.txt")
+def robots_txt():
+    return FileResponse(
+        "robots.txt",
+        media_type="text/plain"
+    )
+
+
+@app.get("/sitemap.xml")
+def sitemap_xml():
+    return FileResponse(
+        "sitemap.xml",
+        media_type="application/xml"
+    )
+
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse(
+        "logo.png",
+        media_type="image/png"
+    )    
 
 
 @app.get("/api/health")
 def health():
-
     return {
         "status": "healthy"
     }
+
 
 # ============================================================
 # VIDEO PREVIEW
@@ -234,7 +245,6 @@ def health():
 
 @app.get("/api/preview")
 def preview_media(url: str):
-
     url = url.strip()
 
     if not url:
@@ -255,7 +265,7 @@ def preview_media(url: str):
         "no_warnings": True,
         "noplaylist": True,
 
-        # Keep preview relatively small so it loads faster.
+        # Keep preview relatively small
         "format": (
             "bestvideo[height<=360]+bestaudio/"
             "best[height<=360]/"
@@ -263,27 +273,22 @@ def preview_media(url: str):
         ),
 
         "outtmpl": output_template,
-
         "ffmpeg_location": FFMPEG_LOCATION,
-
         "merge_output_format": "mp4",
     }
+
     ydl_options = add_cookie_file(ydl_options)
 
     try:
-
         with YoutubeDL(ydl_options) as ydl:
-
             ydl.extract_info(
                 url,
                 download=True
             )
 
-        # Find final MP4 only.
         mp4_files = []
 
         for file in os.listdir(temp_dir):
-
             full_path = os.path.join(
                 temp_dir,
                 file
@@ -291,14 +296,11 @@ def preview_media(url: str):
 
             if (
                 os.path.isfile(full_path)
-                and
-                file.lower().endswith(".mp4")
+                and file.lower().endswith(".mp4")
             ):
-
                 mp4_files.append(full_path)
 
         if len(mp4_files) != 1:
-
             raise Exception(
                 "Preview MP4 could not be created."
             )
@@ -306,13 +308,11 @@ def preview_media(url: str):
         filename = mp4_files[0]
 
         if os.path.getsize(filename) <= 0:
-
             raise Exception(
                 "Preview file is empty."
             )
 
         def cleanup_preview():
-
             try:
                 shutil.rmtree(
                     temp_dir,
@@ -331,7 +331,6 @@ def preview_media(url: str):
         )
 
     except Exception as error:
-
         shutil.rmtree(
             temp_dir,
             ignore_errors=True
@@ -345,42 +344,40 @@ def preview_media(url: str):
             )
         )
 
+
 # ============================================================
 # ANALYZE MEDIA
 # ============================================================
 
 @app.post("/api/analyze")
 def analyze_media(request: AnalyzeRequest):
-
     url = request.url.strip()
 
     if not url:
-
         raise HTTPException(
             status_code=400,
             detail="URL cannot be empty."
         )
 
     try:
-
         ydl_options = {
             "quiet": True,
             "no_warnings": True,
             "skip_download": True,
             "noplaylist": True,
         }
-        ydl_options = add_cookie_file(ydl_options)
-    
+
+        ydl_options = add_cookie_file(
+            ydl_options
+        )
 
         with YoutubeDL(ydl_options) as ydl:
-
             info = ydl.extract_info(
                 url,
                 download=False
             )
 
         if not info:
-
             raise Exception(
                 "No media information was returned."
             )
@@ -401,13 +398,11 @@ def analyze_media(request: AnalyzeRequest):
             "formats",
             []
         ):
-
             height = media_format.get(
                 "height"
             )
 
             if height:
-
                 formats.append({
                     "format_id": media_format.get(
                         "format_id"
@@ -430,9 +425,7 @@ def analyze_media(request: AnalyzeRequest):
                     ),
 
                     "has_audio": (
-                        media_format.get(
-                            "acodec"
-                        )
+                        media_format.get("acodec")
                         not in (
                             None,
                             "none"
@@ -440,9 +433,7 @@ def analyze_media(request: AnalyzeRequest):
                     ),
 
                     "has_video": (
-                        media_format.get(
-                            "vcodec"
-                        )
+                        media_format.get("vcodec")
                         not in (
                             None,
                             "none"
@@ -450,8 +441,8 @@ def analyze_media(request: AnalyzeRequest):
                     ),
                 })
 
-            # A progressive format has both
-            # video and audio in one URL.
+            # Progressive format:
+            # video + audio in one URL
             if (
                 media_format.get("url")
                 and
@@ -461,7 +452,6 @@ def analyze_media(request: AnalyzeRequest):
                 media_format.get("acodec")
                 not in (None, "none")
             ):
-
                 progressive_formats.append(
                     media_format
                 )
@@ -471,7 +461,6 @@ def analyze_media(request: AnalyzeRequest):
         # ====================================================
 
         if progressive_formats:
-
             progressive_formats.sort(
                 key=lambda item: (
                     item.get("height") or 0
@@ -502,7 +491,6 @@ def analyze_media(request: AnalyzeRequest):
         # ====================================================
 
         return {
-
             "status": "success",
 
             "title": (
@@ -534,7 +522,6 @@ def analyze_media(request: AnalyzeRequest):
         }
 
     except Exception as error:
-
         raise HTTPException(
             status_code=400,
             detail=(
@@ -552,12 +539,10 @@ def analyze_media(request: AnalyzeRequest):
 def start_download(
     request: DownloadRequest
 ):
-
     url = request.url.strip()
     format_id = request.format_id.strip()
 
     if not url or not format_id:
-
         raise HTTPException(
             status_code=400,
             detail="URL and format are required."
@@ -592,7 +577,6 @@ def process_video_download(
     url,
     format_id
 ):
-
     temp_dir = tempfile.mkdtemp()
 
     output_template = os.path.join(
@@ -605,11 +589,8 @@ def process_video_download(
     )
 
     ydl_options = {
-
         "quiet": True,
-
         "no_warnings": True,
-
         "noplaylist": True,
 
         "format": (
@@ -627,20 +608,19 @@ def process_video_download(
             progress_hook
         ],
     }
-    ydl_options = add_cookie_file(ydl_options)
+
+    ydl_options = add_cookie_file(
+        ydl_options
+    )
 
     try:
-
         update_job(
             job_id,
             status="preparing",
             progress=0
         )
 
-        with YoutubeDL(
-            ydl_options
-        ) as ydl:
-
+        with YoutubeDL(ydl_options) as ydl:
             info = ydl.extract_info(
                 url,
                 download=True
@@ -668,17 +648,14 @@ def process_video_download(
         if os.path.isfile(
             expected_filename
         ):
-
             filename = expected_filename
 
         else:
-
             mp4_files = []
 
             for file in os.listdir(
                 temp_dir
             ):
-
                 full_path = os.path.join(
                     temp_dir,
                     file
@@ -686,20 +663,16 @@ def process_video_download(
 
                 if (
                     os.path.isfile(full_path)
-                    and
-                    file.lower().endswith(".mp4")
+                    and file.lower().endswith(".mp4")
                 ):
-
                     mp4_files.append(
                         full_path
                     )
 
             if len(mp4_files) == 1:
-
                 filename = mp4_files[0]
 
             elif len(mp4_files) > 1:
-
                 matching_files = [
                     file
                     for file in mp4_files
@@ -715,13 +688,9 @@ def process_video_download(
                 ]
 
                 if len(matching_files) == 1:
-
-                    filename = (
-                        matching_files[0]
-                    )
+                    filename = matching_files[0]
 
                 else:
-
                     raise Exception(
                         "Multiple MP4 files were "
                         "created and the final file "
@@ -729,7 +698,6 @@ def process_video_download(
                     )
 
             else:
-
                 raise Exception(
                     "Final MP4 file was not created."
                 )
@@ -738,10 +706,7 @@ def process_video_download(
         # SAFETY CHECK
         # ====================================================
 
-        if not os.path.isfile(
-            filename
-        ):
-
+        if not os.path.isfile(filename):
             raise Exception(
                 "Final downloaded file does not exist."
             )
@@ -751,7 +716,6 @@ def process_video_download(
         )
 
         if file_size <= 0:
-
             raise Exception(
                 "Final downloaded file is empty."
             )
@@ -762,20 +726,15 @@ def process_video_download(
 
         update_job(
             job_id,
-
             status="completed",
-
             progress=100,
-
             filename=os.path.basename(
                 filename
             ),
-
             filepath=filename
         )
 
     except Exception as error:
-
         shutil.rmtree(
             temp_dir,
             ignore_errors=True
@@ -783,11 +742,8 @@ def process_video_download(
 
         update_job(
             job_id,
-
             status="error",
-
             progress=0,
-
             error=str(error)
         )
 
@@ -802,26 +758,18 @@ def process_video_download(
 def download_status(
     job_id: str
 ):
-
-    job = get_job(
-        job_id
-    )
+    job = get_job(job_id)
 
     if not job:
-
         raise HTTPException(
             status_code=404,
             detail="Download job not found."
         )
 
     return {
-
         "status": job["status"],
-
         "progress": job["progress"],
-
         "filename": job["filename"],
-
         "error": job["error"],
     }
 
@@ -836,20 +784,15 @@ def download_status(
 def download_file(
     job_id: str
 ):
-
-    job = get_job(
-        job_id
-    )
+    job = get_job(job_id)
 
     if not job:
-
         raise HTTPException(
             status_code=404,
             detail="Download job not found."
         )
 
     if job["status"] != "completed":
-
         raise HTTPException(
             status_code=400,
             detail="Download is not ready yet."
@@ -862,7 +805,6 @@ def download_file(
         or
         not os.path.isfile(filepath)
     ):
-
         raise HTTPException(
             status_code=404,
             detail="Downloaded file no longer exists."
@@ -873,32 +815,24 @@ def download_file(
     )
 
     def cleanup():
-
         try:
-
             shutil.rmtree(
                 temp_dir,
                 ignore_errors=True
             )
-
         except Exception:
             pass
 
         with download_jobs_lock:
-
             download_jobs.pop(
                 job_id,
                 None
             )
 
     return FileResponse(
-
         filepath,
-
         media_type="video/mp4",
-
         filename=job["filename"],
-
         background=BackgroundTask(
             cleanup
         )
@@ -915,12 +849,10 @@ def download_file(
 def download_audio(
     request: AudioDownloadRequest
 ):
-
     url = request.url.strip()
     bitrate = request.bitrate
 
     if not url:
-
         raise HTTPException(
             status_code=400,
             detail="URL is required."
@@ -933,7 +865,6 @@ def download_audio(
     }
 
     if bitrate not in allowed_bitrates:
-
         raise HTTPException(
             status_code=400,
             detail="Unsupported audio bitrate."
@@ -947,11 +878,8 @@ def download_audio(
     )
 
     ydl_options = {
-
         "quiet": True,
-
         "no_warnings": True,
-
         "noplaylist": True,
 
         "format": "bestaudio/best",
@@ -963,23 +891,21 @@ def download_audio(
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
-
                 "preferredcodec": "mp3",
-
                 "preferredquality": str(
                     bitrate
                 ),
             }
         ],
     }
-    ydl_options = add_cookie_file(ydl_options)
+
+    # Keep YouTube cookies + Deno + bgutil
+    ydl_options = add_cookie_file(
+        ydl_options
+    )
 
     try:
-
-        with YoutubeDL(
-            ydl_options
-        ) as ydl:
-
+        with YoutubeDL(ydl_options) as ydl:
             info = ydl.extract_info(
                 url,
                 download=True
@@ -998,16 +924,12 @@ def download_audio(
             + ".mp3"
         )
 
-        if not os.path.isfile(
-            filename
-        ):
-
+        if not os.path.isfile(filename):
             mp3_files = []
 
             for file in os.listdir(
                 temp_dir
             ):
-
                 full_path = os.path.join(
                     temp_dir,
                     file
@@ -1015,20 +937,16 @@ def download_audio(
 
                 if (
                     os.path.isfile(full_path)
-                    and
-                    file.lower().endswith(".mp3")
+                    and file.lower().endswith(".mp3")
                 ):
-
                     mp3_files.append(
                         full_path
                     )
 
             if len(mp3_files) == 1:
-
                 filename = mp3_files[0]
 
             elif len(mp3_files) > 1:
-
                 raise Exception(
                     "Multiple MP3 files were created "
                     "and the final file could not be "
@@ -1036,56 +954,41 @@ def download_audio(
                 )
 
             else:
-
                 raise Exception(
                     "MP3 file was not created."
                 )
 
-        if not os.path.isfile(
-            filename
-        ):
-
+        if not os.path.isfile(filename):
             raise Exception(
                 "Final MP3 file does not exist."
             )
 
-        if os.path.getsize(
-            filename
-        ) <= 0:
-
+        if os.path.getsize(filename) <= 0:
             raise Exception(
                 "Final MP3 file is empty."
             )
 
         def cleanup_audio():
-
             try:
-
                 shutil.rmtree(
                     temp_dir,
                     ignore_errors=True
                 )
-
             except Exception:
                 pass
 
         return FileResponse(
-
             filename,
-
             media_type="audio/mpeg",
-
             filename=os.path.basename(
                 filename
             ),
-
             background=BackgroundTask(
                 cleanup_audio
             )
         )
 
     except Exception as error:
-
         shutil.rmtree(
             temp_dir,
             ignore_errors=True
@@ -1101,307 +1004,15 @@ def download_audio(
 
 
 # ============================================================
-# DOWNLOAD STATUS
+# STATIC FILES
+# IMPORTANT: THIS MUST BE LAST
 # ============================================================
 
-@app.get(
-    "/api/download-status/{job_id}"
+app.mount(
+    "/",
+    StaticFiles(
+        directory=".",
+        html=True
+    ),
+    name="static"
 )
-def download_status(
-    job_id: str
-):
-
-    job = get_job(
-        job_id
-    )
-
-    if not job:
-
-        raise HTTPException(
-            status_code=404,
-            detail="Download job not found."
-        )
-
-    return {
-
-        "status": job["status"],
-
-        "progress": job["progress"],
-
-        "filename": job["filename"],
-
-        "error": job["error"],
-    }
-
-
-# ============================================================
-# GET COMPLETED VIDEO
-# ============================================================
-
-@app.get(
-    "/api/download-file/{job_id}"
-)
-def download_file(
-    job_id: str
-):
-
-    job = get_job(
-        job_id
-    )
-
-    if not job:
-
-        raise HTTPException(
-            status_code=404,
-            detail="Download job not found."
-        )
-
-    if job["status"] != "completed":
-
-        raise HTTPException(
-            status_code=400,
-            detail="Download is not ready yet."
-        )
-
-    filepath = job["filepath"]
-
-    if (
-        not filepath
-        or
-        not os.path.isfile(filepath)
-    ):
-
-        raise HTTPException(
-            status_code=404,
-            detail="Downloaded file no longer exists."
-        )
-
-    temp_dir = os.path.dirname(
-        filepath
-    )
-
-    def cleanup():
-
-        try:
-
-            shutil.rmtree(
-                temp_dir,
-                ignore_errors=True
-            )
-
-        except Exception:
-            pass
-
-        with download_jobs_lock:
-
-            download_jobs.pop(
-                job_id,
-                None
-            )
-
-    return FileResponse(
-
-        filepath,
-
-        media_type="video/mp4",
-
-        filename=job["filename"],
-
-        background=BackgroundTask(
-            cleanup
-        )
-    )
-
-
-# ============================================================
-# AUDIO DOWNLOAD
-# ============================================================
-
-@app.post(
-    "/api/download-audio"
-)
-def download_audio(
-    request: AudioDownloadRequest
-):
-
-    url = request.url.strip()
-    bitrate = request.bitrate
-
-    if not url:
-
-        raise HTTPException(
-            status_code=400,
-            detail="URL is required."
-        )
-
-    allowed_bitrates = {
-        128,
-        192,
-        320
-    }
-
-    if bitrate not in allowed_bitrates:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Unsupported audio bitrate."
-        )
-
-    temp_dir = tempfile.mkdtemp()
-
-    output_template = os.path.join(
-        temp_dir,
-        "%(title)s.%(ext)s"
-    )
-
-    ydl_options = {
-
-        "quiet": True,
-
-        "no_warnings": True,
-
-        "noplaylist": True,
-
-        "format": "bestaudio/best",
-
-        "outtmpl": output_template,
-
-        "ffmpeg_location": FFMPEG_LOCATION,
-
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-
-                "preferredcodec": "mp3",
-
-                "preferredquality": str(
-                    bitrate
-                ),
-            }
-        ],
-    }
-
-    try:
-
-        with YoutubeDL(
-            ydl_options
-        ) as ydl:
-
-            info = ydl.extract_info(
-                url,
-                download=True
-            )
-
-            original_filename = (
-                ydl.prepare_filename(
-                    info
-                )
-            )
-
-        filename = (
-            os.path.splitext(
-                original_filename
-            )[0]
-            + ".mp3"
-        )
-
-        if not os.path.isfile(
-            filename
-        ):
-
-            mp3_files = []
-
-            for file in os.listdir(
-                temp_dir
-            ):
-
-                full_path = os.path.join(
-                    temp_dir,
-                    file
-                )
-
-                if (
-                    os.path.isfile(full_path)
-                    and
-                    file.lower().endswith(".mp3")
-                ):
-
-                    mp3_files.append(
-                        full_path
-                    )
-
-            if len(mp3_files) == 1:
-
-                filename = mp3_files[0]
-
-            elif len(mp3_files) > 1:
-
-                raise Exception(
-                    "Multiple MP3 files were created "
-                    "and the final file could not be "
-                    "identified safely."
-                )
-
-            else:
-
-                raise Exception(
-                    "MP3 file was not created."
-                )
-
-        if not os.path.isfile(
-            filename
-        ):
-
-            raise Exception(
-                "Final MP3 file does not exist."
-            )
-
-        if os.path.getsize(
-            filename
-        ) <= 0:
-
-            raise Exception(
-                "Final MP3 file is empty."
-            )
-
-        def cleanup_audio():
-
-            try:
-
-                shutil.rmtree(
-                    temp_dir,
-                    ignore_errors=True
-                )
-
-            except Exception:
-                pass
-
-        return FileResponse(
-
-            filename,
-
-            media_type="audio/mpeg",
-
-            filename=os.path.basename(
-                filename
-            ),
-
-            background=BackgroundTask(
-                cleanup_audio
-            )
-        )
-
-    except Exception as error:
-
-        shutil.rmtree(
-            temp_dir,
-            ignore_errors=True
-        )
-
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                "Audio download failed: "
-                f"{str(error)}"
-            )
-        )
