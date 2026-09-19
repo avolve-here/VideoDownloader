@@ -78,27 +78,59 @@ RENDER_COOKIES_FILE = "/etc/secrets/cookies.txt"
 
 
 def add_cookie_file(ydl_options):
-    if os.path.isfile(RENDER_COOKIES_FILE):
-        writable_cookie_file = os.path.join(
-            tempfile.gettempdir(),
-            "nuvexa-youtube-cookies.txt"
-        )
+    cookie_sources = [
+        RENDER_COOKIES_FILE,
+        os.path.join(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__)
+                )
+            ),
+            "cookies.txt"
+        ),
+    ]
 
-        shutil.copyfile(
-            RENDER_COOKIES_FILE,
-            writable_cookie_file
-        )
+    for cookie_source in cookie_sources:
+        if os.path.isfile(cookie_source):
+            writable_cookie_file = os.path.join(
+                tempfile.gettempdir(),
+                "nuvexa-youtube-cookies.txt"
+            )
 
-        ydl_options["cookiefile"] = writable_cookie_file
+            shutil.copyfile(
+                cookie_source,
+                writable_cookie_file
+            )
 
-    # YouTube JavaScript challenge solving
-    ydl_options["js_runtimes"] = {
-        "deno": {
-            "path": "/root/.deno/bin/deno"
+            ydl_options["cookiefile"] = (
+                writable_cookie_file
+            )
+
+            break
+
+    deno_path = shutil.which("deno")
+
+    if not deno_path:
+        if os.name == "nt":
+            possible_deno = os.path.join(
+                os.path.expanduser("~"),
+                ".deno",
+                "bin",
+                "deno.exe"
+            )
+        else:
+            possible_deno = "/root/.deno/bin/deno"
+
+        if os.path.isfile(possible_deno):
+            deno_path = possible_deno
+
+    if deno_path:
+        ydl_options["js_runtimes"] = {
+            "deno": {
+                "path": deno_path
+            }
         }
-    }
 
-    # YouTube PO Token provider
     ydl_options["extractor_args"] = {
         "youtubepot-bgutilhttp": {
             "base_url": "http://127.0.0.1:4416"

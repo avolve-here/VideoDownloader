@@ -2,7 +2,7 @@ const analyzeBtn = document.getElementById("analyzeBtn");
 const urlInput = document.getElementById("urlInput");
 const pasteBtn = document.getElementById("pasteBtn");
 
-const API_BASE = "https://nuvexa-videodownloader.onrender.com";
+const API_BASE = "";
 
 pasteBtn.addEventListener("click", async () => {
     try {
