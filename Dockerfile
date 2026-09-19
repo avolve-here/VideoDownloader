@@ -1,6 +1,7 @@
 # ============================================================
 # Stage 1: Build bgutil PO Token Provider
 # ============================================================
+
 FROM node:22-bookworm-slim AS pot-provider
 
 WORKDIR /provider
@@ -20,6 +21,7 @@ RUN npx tsc
 # ============================================================
 # Stage 2: Nuvexa Video Downloader
 # ============================================================
+
 FROM python:3.12-slim
 
 RUN apt-get update && \
@@ -31,6 +33,9 @@ RUN curl -fsSL https://deno.land/install.sh | sh
 
 ENV DENO_INSTALL=/root/.deno
 ENV PATH=$DENO_INSTALL/bin:$PATH
+
+# Copy Node.js runtime for bgutil PO Token provider
+COPY --from=pot-provider /usr/local/bin/node /usr/local/bin/node
 
 WORKDIR /app
 
