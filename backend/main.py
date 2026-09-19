@@ -88,6 +88,10 @@ def add_cookie_file(ydl_options):
 
         ydl_options["cookiefile"] = writable_cookie_file
 
+    ydl_options["js_runtimes"] = {
+        "deno": "/root/.deno/bin/deno"
+    }
+
     return ydl_options
 
 
