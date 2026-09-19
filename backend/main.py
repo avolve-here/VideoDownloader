@@ -76,7 +76,17 @@ RENDER_COOKIES_FILE = "/etc/secrets/cookies.txt"
 
 def add_cookie_file(ydl_options):
     if os.path.isfile(RENDER_COOKIES_FILE):
-        ydl_options["cookiefile"] = RENDER_COOKIES_FILE
+        writable_cookie_file = os.path.join(
+            tempfile.gettempdir(),
+            "nuvexa-youtube-cookies.txt"
+        )
+
+        shutil.copyfile(
+            RENDER_COOKIES_FILE,
+            writable_cookie_file
+        )
+
+        ydl_options["cookiefile"] = writable_cookie_file
 
     return ydl_options
 
