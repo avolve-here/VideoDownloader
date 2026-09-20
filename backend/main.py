@@ -266,31 +266,44 @@ def favicon():
 
 @app.get("/api/health")
 def health():
-    ydl_options = {}
+    test_url = "https://www.youtube.com/watch?v=p56fpxl7WEA"
 
-    add_cookie_file(ydl_options)
+    try:
+        ydl_options = {
+            "quiet": True,
+            "no_warnings": True,
+            "skip_download": True,
+            "noplaylist": True,
+        }
 
-    cookie_path = ydl_options.get("cookiefile")
+        ydl_options = add_cookie_file(ydl_options)
 
-    return {
-        "status": "healthy",
-        "cookie_file_exists": os.path.isfile(RENDER_COOKIES_FILE),
-        "cookie_file_size": (
-            os.path.getsize(RENDER_COOKIES_FILE)
-            if os.path.isfile(RENDER_COOKIES_FILE)
-            else 0
-        ),
-        "yt_dlp_cookiefile_set": bool(cookie_path),
-        "yt_dlp_cookiefile_exists": (
-            bool(cookie_path)
-            and os.path.isfile(cookie_path)
-        ),
-        "deno_configured": "js_runtimes" in ydl_options,
-        "bgutil_configured": (
-            "youtubepot-bgutilhttp"
-            in ydl_options.get("extractor_args", {})
-        )
-    }
+        with YoutubeDL(ydl_options) as ydl:
+            info = ydl.extract_info(
+                test_url,
+                download=False
+            )
+
+        return {
+            "status": "youtube_ok",
+            "title": info.get("title"),
+            "id": info.get("id"),
+            "cookie_configured": bool(
+                ydl_options.get("cookiefile")
+            ),
+            "deno_configured": "js_runtimes" in ydl_options,
+            "bgutil_configured": (
+                "youtubepot-bgutilhttp"
+                in ydl_options.get("extractor_args", {})
+            )
+        }
+
+    except Exception as e:
+        return {
+            "status": "youtube_failed",
+            "error_type": type(e).__name__,
+            "error": str(e)
+        }
 
 
 # ============================================================
