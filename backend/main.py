@@ -434,9 +434,14 @@ def analyze_media(request: AnalyzeRequest):
             "noplaylist": True,
         }
 
-        ydl_options = add_cookie_file(
-            ydl_options
-        )
+        # YouTube needs cookies/Deno/bgutil.
+        # Instagram does not need the YouTube setup.
+        is_instagram = "instagram.com" in url.lower()
+
+        if not is_instagram:
+            ydl_options = add_cookie_file(
+                ydl_options
+            )
 
         with YoutubeDL(ydl_options) as ydl:
             info = ydl.extract_info(
