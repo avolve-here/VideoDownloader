@@ -174,9 +174,8 @@ async function analyzeMedia() {
         );
 
         showError(
-            error.message ||
-            "Unable to connect to the Nuvexa server."
-        );
+    "This video is not available for download."
+);
 
     } finally {
 
@@ -591,9 +590,8 @@ async function downloadFormat(format, clickedButton) {
         clickedButton.disabled = false;
 
         alert(
-            error.message ||
-            "Unable to download this format."
-        );
+    "This video is not available for download."
+);
     }
 }
 
@@ -606,12 +604,10 @@ async function monitorDownload(
     jobId,
     clickedButton
 ) {
-
     const statusText =
         clickedButton.querySelector("span");
 
     while (true) {
-
         await sleep(700);
 
         const response = await fetch(
@@ -621,7 +617,6 @@ async function monitorDownload(
         const data = await response.json();
 
         if (!response.ok) {
-
             throw new Error(
                 data.detail ||
                 "Unable to check download status."
@@ -632,49 +627,37 @@ async function monitorDownload(
             data.status === "starting" ||
             data.status === "preparing"
         ) {
-
             statusText.textContent =
                 "Preparing...";
-
         } else if (
             data.status === "downloading"
         ) {
-
             statusText.textContent =
                 `Downloading ${data.progress}%`;
-
         } else if (
             data.status === "merging"
         ) {
-
             statusText.textContent =
                 "Merging...";
-
         } else if (
             data.status === "completed"
         ) {
-
             statusText.textContent =
                 "Done ✓";
 
             await fetchCompletedFile(jobId);
-
             await sleep(1500);
 
             statusText.textContent =
                 "Download";
 
             clickedButton.disabled = false;
-
             return;
-
         } else if (
             data.status === "error"
         ) {
-
             throw new Error(
-                data.error ||
-                "Download failed."
+                "This video is not available for download."
             );
         }
     }
@@ -830,13 +813,10 @@ async function downloadAudio(
         );
 
     } catch (error) {
-
-        alert(
-            error.message ||
-            "Unable to download audio."
-        );
-
-    } finally {
+    alert(
+        "This video is not available for download."
+    );
+} finally {
 
         clickedButton.disabled = false;
         statusText.textContent = originalText;
