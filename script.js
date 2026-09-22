@@ -213,9 +213,17 @@ async function loadPreview(previewUrl, thumbnail) {
     }
 
     if (playerPlaceholder) {
-        playerPlaceholder.style.display = "flex";
-        playerPlaceholder.style.backgroundImage = "";
+    playerPlaceholder.style.display = "flex";
+    playerPlaceholder.style.backgroundImage = "";
+
+    const placeholderText =
+        playerPlaceholder.querySelector("span");
+
+    if (placeholderText) {
+        placeholderText.textContent =
+            "Loading preview...";
     }
+}
 
     try {
 
@@ -347,14 +355,12 @@ function renderVideoOptions(formats) {
             format => format.height < 360
         );
 
-    visibleFormats.forEach(format => {
+    visibleFormats.forEach((format, index) => {
+    const button =
+        createVideoButton(format, index === 0);
 
-        const button =
-            createVideoButton(format);
-
-        videoContainer.appendChild(button);
-    });
-
+    videoContainer.appendChild(button);
+});
     if (hiddenFormats.length > 0) {
 
         const moreButton =
@@ -409,8 +415,7 @@ function renderVideoOptions(formats) {
 // CREATE VIDEO BUTTON
 // ============================================================
 
-function createVideoButton(format) {
-
+function createVideoButton(format, isOriginal = false) {
     const button =
         document.createElement("button");
 
@@ -424,10 +429,9 @@ function createVideoButton(format) {
 
     button.innerHTML = `
         <div>
-            <strong>${format.height}p</strong>
+            <strong>${isOriginal ? "Original quality" : `${format.height}p`}</strong>
             <small>${formatName}</small>
         </div>
-
         <span>Download</span>
     `;
 
@@ -437,7 +441,6 @@ function createVideoButton(format) {
 
     return button;
 }
-
 
 // ============================================================
 // AUDIO OPTIONS

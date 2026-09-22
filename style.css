@@ -310,6 +310,18 @@ a {
     gap: 20px;
 }
 
+.results-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.download-another-text {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
 
 /* =========================
    CLOSE / BACK BUTTON
@@ -781,6 +793,14 @@ footer {
     .results-heading {
         align-items: flex-start;
     }
+
+    .results-actions {
+    gap: 7px;
+}
+
+.download-another-text {
+    font-size: 11px;
+}
 
     .close-results {
         width: 38px;
