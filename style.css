@@ -791,10 +791,10 @@ footer {
     }
 
 
-        /* Results */
+       /* Results */
 .results-heading {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
@@ -805,11 +805,13 @@ footer {
 
 .results-heading > div:first-child > span {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    font-size: 11px;
+    line-height: 1;
 }
 
 .results-heading h2 {
-    font-size: 26px;
+    font-size: 20px;
     line-height: 1.15;
     white-space: nowrap;
 }
@@ -819,13 +821,11 @@ footer {
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
-    padding-top: 2px;
 }
 
 .download-another-text {
-    font-size: 11px;
+    font-size: 10px;
     line-height: 1.2;
-    text-align: right;
     white-space: nowrap;
 }
 
