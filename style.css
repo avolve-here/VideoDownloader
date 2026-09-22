@@ -791,38 +791,40 @@ footer {
     }
 
 
-    /* Results */
-
+        /* Results */
     .results-heading {
-    align-items: flex-start;
-    gap: 10px;
-}
+        align-items: center;
+        gap: 12px;
+    }
 
-.results-heading > div:first-child {
-    min-width: 0;
-}
+    .results-heading > div:first-child {
+        min-width: 0;
+    }
 
-.results-heading h2 {
-    font-size: 26px;
-    line-height: 1.15;
-}
+    .results-heading h2 {
+        font-size: 26px;
+        line-height: 1.15;
+        white-space: nowrap;
+    }
 
-.results-actions {
-    gap: 5px;
-    flex-shrink: 0;
-}
+    .results-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        flex-shrink: 0;
+    }
 
-.download-another-text {
-    font-size: 9px;
-    line-height: 1.2;
-    text-align: right;
-    white-space: normal;
-    max-width: 80px;
-}
+    .download-another-text {
+        font-size: 11px;
+        line-height: 1.2;
+        text-align: right;
+        white-space: nowrap;
+        max-width: none;
+    }
+
     .close-results {
         width: 38px;
         height: 38px;
-
         font-size: 24px;
     }
 
