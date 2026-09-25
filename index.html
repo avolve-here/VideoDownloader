@@ -15,7 +15,10 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Nuvexa">
 
-    <link rel="canonical" href="https://nuvexa-video-downloader.onrender.com/">
+    <link
+        rel="canonical"
+        href="https://nuvexa-video-downloader.onrender.com/"
+    >
 
     <link rel="stylesheet" href="style.css">
 
@@ -23,7 +26,12 @@
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
@@ -32,15 +40,24 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Nuvexa — Download Videos & Audio">
+
     <meta
         property="og:description"
         content="A simple, fast and ad-free video and audio downloader with no sign-up required."
     >
-    <meta property="og:url" content="https://nuvexa-video-downloader.onrender.com/">
+
+    <meta
+        property="og:url"
+        content="https://nuvexa-video-downloader.onrender.com/"
+    >
+
     <meta property="og:site_name" content="Nuvexa">
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RE4LP6J27V"></script>
+    <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-RE4LP6J27V"
+    ></script>
 
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -52,12 +69,14 @@
         gtag('js', new Date());
         gtag('config', 'G-RE4LP6J27V');
     </script>
+
 </head>
 
 <body>
 
     <!-- NAVBAR -->
     <header class="navbar">
+
         <div class="nav-container">
 
             <a href="#" class="logo">
@@ -65,155 +84,101 @@
             </a>
 
             <nav class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#downloader">Downloader</a>
-                <a href="#supported">Supported Sites</a>
-                <a href="#about">About</a>
+
+                <a href="#home">
+                    Home
+                </a>
+
+                <a href="#downloader">
+                    Downloader
+                </a>
+
+                <a href="#supported">
+                    Supported Sites
+                </a>
+
+                <a href="#about">
+                    About
+                </a>
+
             </nav>
 
         </div>
+
     </header>
+
 
 
     <!-- HERO -->
     <main id="home">
 
         <section class="hero">
-    <div class="hero-content">
 
-        <div class="download-type">
-            <span class="download-type-label">
-                What do you want to download?
-            </span>
+            <div class="hero-content">
 
-            <div class="download-type-buttons">
-                <button
-                    type="button"
-                    class="download-type-button active"
-                    data-type="video"
-                >
-                    Video
-                </button>
+                <div class="downloader-mode video-mode" id="videoMode">
 
-                <button
-                    type="button"
-                    class="download-type-button"
-                    data-type="music"
-                >
-                    Music
-                </button>
-            </div>
-        </div>
+                    <h1>
+                        Download Any Video
+                        <span>easily.</span>
+                    </h1>
 
-        <div class="downloader-mode video-mode" id="videoMode">
+                    <p>
+                        Paste a supported media URL, choose your quality,
+                        and download it in seconds.
+                    </p>
 
-    <h1>
-        Download Any Video
-        <span>easily.</span>
-    </h1>
+                    <div class="supported-inline">
 
-    <p>
-        Paste a supported media URL, choose your quality,
-        and download it in seconds.
-    </p>
+                        <span>Instagram</span>
+                        <span>TikTok</span>
+                        <span>Reddit</span>
+                        <span>X</span>
+                        <span>Facebook</span>
+                        <span>Pinterest</span>
+                        <span>Vimeo</span>
 
-    <div class="supported-inline">
-        <span>Instagram</span>
-        <span>TikTok</span>
-        <span>Reddit</span>
-        <span>X</span>
-        <span>Facebook</span>
-        <span>Pinterest</span>
-        <span>Vimeo</span>
-    </div>
+                    </div>
 
-    <div class="url-box" id="downloader">
-        <input
-            type="text"
-            id="urlInput"
-            placeholder="Paste Media URL; Instagram, Reddit, TikTok, X..."
-            autocomplete="off"
-        >
+                    <div class="url-box" id="downloader">
 
-        <button
-            type="button"
-            id="pasteBtn"
-            class="paste-button"
-        >
-            Paste
-        </button>
+                        <input
+                            type="text"
+                            id="urlInput"
+                            placeholder="Paste Media URL; Instagram, Reddit, TikTok, X..."
+                            autocomplete="off"
+                        >
 
-        <button
-            type="button"
-            id="analyzeBtn"
-        >
-            Analyze
-        </button>
-    </div>
+                        <button
+                            type="button"
+                            id="pasteBtn"
+                            class="paste-button"
+                        >
+                            Paste
+                        </button>
 
-    <p class="input-note"></p>
+                        <button
+                            type="button"
+                            id="analyzeBtn"
+                        >
+                            Analyze
+                        </button>
 
-</div>
+                    </div>
 
+                    <p class="input-note"></p>
 
-<div
-    class="downloader-mode music-mode"
-    id="musicMode"
-    style="display: none;"
->
-
-    <h1>
-        Download Any Music
-        <span>easily.</span>
-    </h1>
-
-    <p>
-        Paste a Spotify link and download the track
-        in your preferred audio format.
-    </p>
-
-    <div class="supported-inline">
-        <span>Spotify</span>
-    </div>
-
-    <div class="url-box">
-        <input
-            type="text"
-            id="musicUrlInput"
-            placeholder="Paste Spotify track, album or playlist URL..."
-            autocomplete="off"
-        >
-
-        <button
-            type="button"
-            id="musicPasteBtn"
-            class="paste-button"
-        >
-            Paste
-        </button>
-
-        <button
-            type="button"
-            id="musicAnalyzeBtn"
-        >
-            Analyze
-        </button>
-    </div>
-
-    <p
-        class="input-note"
-        id="musicInputNote"
-    ></p>
-
-</div>
+                </div>
 
             </div>
 
         </section>
 
 
+
         <!-- DOWNLOAD RESULTS -->
         <!-- Hidden until Analyze succeeds -->
+
         <section
             class="results-section"
             id="results"
@@ -221,160 +186,30 @@
         >
 
             <div class="section-heading results-heading">
-    <div>
-        <span>DOWNLOAD</span>
-        <h2>
-            Choose your format
-        </h2>
-    </div>
-
-    <div class="results-actions">
-        <span class="download-another-text">
-            Download another video
-        </span>
-
-        <button
-            class="close-results"
-            id="closeResults"
-            type="button"
-            aria-label="Download another video"
-        >
-            ×
-        </button>
-    </div>
-</div>
-
-
-                <div class="media-card">
-
-                    <!-- VIDEO PREVIEW -->
-                    <div class="preview-player">
-
-                        <video
-                            id="mediaPlayer"
-                            controls
-                            playsinline
-                            preload="metadata"
-                        ></video>
-
-                        <div
-                            class="player-placeholder"
-                            id="playerPlaceholder"
-                        >
-
-                            <div class="player-placeholder-icon">
-                                ▶
-                            </div>
-
-                            <span>
-                                Preview will appear here
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- MEDIA INFO -->
-                    <div class="media-info">
-
-                        <h3 id="mediaTitle">
-                            Media title
-                        </h3>
-
-                        <p id="mediaDetails">
-                            Media details
-                        </p>
-
-                    </div>
-
-
-                    <!-- VIDEO DOWNLOADS -->
-                    <div class="download-group">
-
-                        <div class="group-title">
-
-                            <div>
-                                <h3>Video</h3>
-
-                                <span>
-                                    Choose a video quality
-                                </span>
-                            </div>
-
-                            <strong>
-                                MP4
-                            </strong>
-
-                        </div>
-
-                        <div class="download-options">
-                            <!-- Generated by JavaScript -->
-                        </div>
-
-                    </div>
-
-
-                    <!-- AUDIO DOWNLOADS -->
-                    <div class="download-group">
-
-                        <div class="group-title">
-
-                            <div>
-                                <h3>Audio</h3>
-
-                                <span>
-                                    Extract audio from the media
-                                </span>
-                            </div>
-
-                            <strong>
-                                MP3
-                            </strong>
-
-                        </div>
-
-                        <div class="download-options">
-                            <!-- Generated by JavaScript -->
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- MUSIC DOWNLOAD RESULTS -->
-        <section
-            class="music-results-section"
-            id="musicResults"
-            style="display: none;"
-        >
-
-            <div class="section-heading results-heading">
 
                 <div>
-                    <span>DOWNLOAD</span>
+
+                    <span>
+                        DOWNLOAD
+                    </span>
 
                     <h2>
-                        Your music
+                        Choose your format
                     </h2>
+
                 </div>
 
                 <div class="results-actions">
 
                     <span class="download-another-text">
-                        Download another track
+                        Download another video
                     </span>
 
                     <button
                         class="close-results"
-                        id="closeMusicResults"
+                        id="closeResults"
                         type="button"
-                        aria-label="Download another track"
+                        aria-label="Download another video"
                     >
                         ×
                     </button>
@@ -384,31 +219,88 @@
             </div>
 
 
-            <div class="media-card music-card">
 
-                <div class="music-track-info">
+            <div class="media-card">
 
-                    <img
-                        id="musicThumbnail"
-                        class="music-thumbnail"
-                        src=""
-                        alt="Album artwork"
+                <!-- VIDEO PREVIEW -->
+
+                <div class="preview-player">
+
+                    <video
+                        id="mediaPlayer"
+                        controls
+                        playsinline
+                        preload="metadata"
+                    ></video>
+
+                    <div
+                        class="player-placeholder"
+                        id="playerPlaceholder"
                     >
 
-                    <div class="music-track-details">
+                        <div class="player-placeholder-icon">
+                            ▶
+                        </div>
 
-                        <h3 id="musicTitle">
-                            Track title
-                        </h3>
-
-                        <p id="musicArtist">
-                            Artist
-                        </p>
+                        <span>
+                            Preview will appear here
+                        </span>
 
                     </div>
 
                 </div>
 
+
+
+                <!-- MEDIA INFO -->
+
+                <div class="media-info">
+
+                    <h3 id="mediaTitle">
+                        Media title
+                    </h3>
+
+                    <p id="mediaDetails">
+                        Media details
+                    </p>
+
+                </div>
+
+
+
+                <!-- VIDEO DOWNLOADS -->
+
+                <div class="download-group">
+
+                    <div class="group-title">
+
+                        <div>
+
+                            <h3>
+                                Video
+                            </h3>
+
+                            <span>
+                                Choose a video quality
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            MP4
+                        </strong>
+
+                    </div>
+
+                    <div class="download-options">
+                        <!-- Generated by JavaScript -->
+                    </div>
+
+                </div>
+
+
+
+                <!-- AUDIO DOWNLOADS -->
 
                 <div class="download-group">
 
@@ -421,72 +313,146 @@
                             </h3>
 
                             <span>
-                                Choose your format and quality
+                                Extract audio from the media
                             </span>
 
                         </div>
 
                         <strong>
-                            AUDIO
+                            MP3
                         </strong>
 
                     </div>
 
+                    <div class="download-options">
+                        <!-- Generated by JavaScript -->
+                    </div>
 
-                    <div class="music-download-controls">
+                </div>
 
-                        <select id="musicFormat">
+            </div>
 
-                            <option value="mp3">
-                                MP3
-                            </option>
-
-                            <option value="m4a">
-                                M4A
-                            </option>
-
-                            <option value="opus">
-                                Opus
-                            </option>
-
-                            <option value="ogg">
-                                OGG
-                            </option>
-
-                            <option value="flac">
-                                FLAC
-                            </option>
-
-                            <option value="wav">
-                                WAV
-                            </option>
-
-                        </select>
+        </section>
 
 
-                        <select id="musicBitrate">
 
-                            <option value="128k">
-                                128 kbps
-                            </option>
+        <!-- HOW TO DOWNLOAD -->
 
-                            <option value="192k">
-                                192 kbps
-                            </option>
+        <section
+            class="how-to-section"
+            id="how-to"
+        >
 
-                            <option value="320k" selected>
-                                320 kbps
-                            </option>
+            <div class="section-container">
 
-                        </select>
+                <div class="section-heading">
+
+                    <span>
+                        HOW IT WORKS
+                    </span>
+
+                    <h2>
+                        How to download a video
+                    </h2>
+
+                </div>
+
+                <div class="how-to-grid">
+
+                    <!-- STEP 01 -->
+
+                    <div class="how-to-card">
+
+                        <div class="step-number">
+                            01
+                        </div>
+
+                        <div class="step-content">
+
+                            <h3>
+                                Copy the link
+                            </h3>
+
+                            <p>
+                                Open the video you want to download and copy its link.
+                            </p>
+
+                        </div>
+
+                        <div class="step-image">
+
+                            <img
+                                src="images/how-to-copy-link.png"
+                                alt="Copy a video link"
+                            >
+
+                        </div>
+
+                    </div>
 
 
-                        <button
-                            type="button"
-                            id="musicDownloadBtn"
-                        >
-                            Download
-                        </button>
+
+                    <!-- STEP 02 -->
+
+                    <div class="how-to-card">
+
+                        <div class="step-number">
+                            02
+                        </div>
+
+                        <div class="step-content">
+
+                            <h3>
+                                Paste the link
+                            </h3>
+
+                            <p>
+                                Paste the video link into the Nuvexa downloader.
+                            </p>
+
+                        </div>
+
+                        <div class="step-image">
+
+                            <img
+                                src="images/how-to-paste-link.png"
+                                alt="Paste a video link into Nuvexa"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- STEP 03 -->
+
+                    <div class="how-to-card">
+
+                        <div class="step-number">
+                            03
+                        </div>
+
+                        <div class="step-content">
+
+                            <h3>
+                                Download
+                            </h3>
+
+                            <p>
+                                Choose your preferred option and download your media.
+                            </p>
+
+                        </div>
+
+                        <div class="step-image">
+
+                            <img
+                                src="images/how-to-download.png"
+                                alt="Download a video from Nuvexa"
+                            >
+
+                        </div>
 
                     </div>
 
@@ -497,77 +463,9 @@
         </section>
 
 
-        <!-- HOW TO DOWNLOAD -->
-
-
-        <!-- HOW TO DOWNLOAD -->
-<section class="how-to-section" id="how-to">
-    <div class="section-container">
-
-        <div class="section-heading">
-            <span>HOW IT WORKS</span>
-            <h2>How to download a video</h2>
-        </div>
-
-        <div class="how-to-grid">
-
-            <!-- STEP 01 -->
-            <div class="how-to-card">
-                <div class="step-number">01</div>
-
-                <div class="step-content">
-                    <h3>Copy the link</h3>
-                    <p>Open the video you want to download and copy its link.</p>
-                </div>
-
-                <div class="step-image">
-                    <img
-                        src="images/how-to-copy-link.png"
-                        alt="Copy a video link"
-                    >
-                </div>
-            </div>
-
-            <!-- STEP 02 -->
-            <div class="how-to-card">
-                <div class="step-number">02</div>
-
-                <div class="step-content">
-                    <h3>Paste the link</h3>
-                    <p>Paste the video link into the Nuvexa downloader.</p>
-                </div>
-
-                <div class="step-image">
-                    <img
-                        src="images/how-to-paste-link.png"
-                        alt="Paste a video link into Nuvexa"
-                    >
-                </div>
-            </div>
-
-            <!-- STEP 03 -->
-            <div class="how-to-card">
-                <div class="step-number">03</div>
-
-                <div class="step-content">
-                    <h3>Download</h3>
-                    <p>Choose your preferred option and download your media.</p>
-                </div>
-
-                <div class="step-image">
-                    <img
-                        src="images/how-to-download.png"
-                        alt="Download a video from Nuvexa"
-                    >
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
 
         <!-- SUPPORTED SITES -->
+
         <section
             class="supported-section"
             id="supported"
@@ -588,22 +486,45 @@
                 </div>
 
 
+
                 <div class="platform-grid">
 
-
                     <div class="platform-card">
-                        <strong>Instagram</strong>
-                        <span>Supported media</span>
+
+                        <strong>
+                            Instagram
+                        </strong>
+
+                        <span>
+                            Supported media
+                        </span>
+
                     </div>
 
-                    <div class="platform-card">
-                        <strong>TikTok</strong>
-                        <span>Supported media</span>
-                    </div>
 
                     <div class="platform-card">
-                        <strong>Direct URLs</strong>
-                        <span>Media files</span>
+
+                        <strong>
+                            TikTok
+                        </strong>
+
+                        <span>
+                            Supported media
+                        </span>
+
+                    </div>
+
+
+                    <div class="platform-card">
+
+                        <strong>
+                            Direct URLs
+                        </strong>
+
+                        <span>
+                            Media files
+                        </span>
+
                     </div>
 
                 </div>
@@ -613,7 +534,9 @@
         </section>
 
 
+
         <!-- ABOUT -->
+
         <section
             class="about-section"
             id="about"
@@ -642,7 +565,9 @@
     </main>
 
 
+
     <!-- FOOTER -->
+
     <footer>
 
         <div class="footer-container">
@@ -658,6 +583,7 @@
                 </span>
 
             </div>
+
 
 
             <div class="footer-links">
@@ -693,6 +619,7 @@
             </div>
 
 
+
             <div class="footer-bottom">
 
                 <span>
@@ -706,9 +633,11 @@
     </footer>
 
 
-        <script src="script.js"></script>
+
+    <script src="script.js"></script>
 
     <!-- TinyAdz -->
+
     <script
         src="https://cdn.apitiny.net/scripts/v2.0/main.js"
         data-site-id="6ab5f8d38802749077e4e3c0"
@@ -717,4 +646,5 @@
     ></script>
 
 </body>
+
 </html>
