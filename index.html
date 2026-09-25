@@ -79,58 +79,133 @@
     <main id="home">
 
         <section class="hero">
+    <div class="hero-content">
 
-            <div class="hero-content">
+        <div class="download-type">
+            <span class="download-type-label">
+                What do you want to download?
+            </span>
 
-                <h1>
-                    Download Any Video or Audio
-                    <span>easily.</span>
-                </h1>
+            <div class="download-type-buttons">
+                <button
+                    type="button"
+                    class="download-type-button active"
+                    data-type="video"
+                >
+                    Video
+                </button>
 
-                <p>
-                    Paste a supported media URL, choose your quality,
-                    and download it in seconds.
-                </p>
+                <button
+                    type="button"
+                    class="download-type-button"
+                    data-type="music"
+                >
+                    Music
+                </button>
+            </div>
+        </div>
 
-                <div class="supported-inline">
-                    <span>Instagram</span>
-                    <span>TikTok</span>
-                    <span>Reddit</span>
-                    <span>X</span>
-                    <span>Facebook</span>
-                    <span>Pinterest</span>
-                    <span>Vimeo</span>
-                </div>
+        <div class="downloader-mode video-mode" id="videoMode">
 
+    <h1>
+        Download Any Video
+        <span>easily.</span>
+    </h1>
 
-                <!-- URL SEARCH -->
-                <div class="url-box" id="downloader">
+    <p>
+        Paste a supported media URL, choose your quality,
+        and download it in seconds.
+    </p>
 
-    <input
-        type="text"
-        id="urlInput"
-        placeholder="Paste Media URL; Instagram, Reddit, TikTok, X..."
-        autocomplete="off"
-    >
+    <div class="supported-inline">
+        <span>Instagram</span>
+        <span>TikTok</span>
+        <span>Reddit</span>
+        <span>X</span>
+        <span>Facebook</span>
+        <span>Pinterest</span>
+        <span>Vimeo</span>
+    </div>
 
-    <button
-        type="button"
-        id="pasteBtn"
-        class="paste-button"
-    >
-        Paste
-    </button>
+    <div class="url-box" id="downloader">
+        <input
+            type="text"
+            id="urlInput"
+            placeholder="Paste Media URL; Instagram, Reddit, TikTok, X..."
+            autocomplete="off"
+        >
 
-    <button
-        type="button"
-        id="analyzeBtn"
-    >
-        Analyze
-    </button>
+        <button
+            type="button"
+            id="pasteBtn"
+            class="paste-button"
+        >
+            Paste
+        </button>
+
+        <button
+            type="button"
+            id="analyzeBtn"
+        >
+            Analyze
+        </button>
+    </div>
+
+    <p class="input-note"></p>
 
 </div>
 
-                <p class="input-note"></p>
+
+<div
+    class="downloader-mode music-mode"
+    id="musicMode"
+    style="display: none;"
+>
+
+    <h1>
+        Download Any Music
+        <span>easily.</span>
+    </h1>
+
+    <p>
+        Paste a Spotify link and download the track
+        in your preferred audio format.
+    </p>
+
+    <div class="supported-inline">
+        <span>Spotify</span>
+    </div>
+
+    <div class="url-box">
+        <input
+            type="text"
+            id="musicUrlInput"
+            placeholder="Paste Spotify track, album or playlist URL..."
+            autocomplete="off"
+        >
+
+        <button
+            type="button"
+            id="musicPasteBtn"
+            class="paste-button"
+        >
+            Paste
+        </button>
+
+        <button
+            type="button"
+            id="musicAnalyzeBtn"
+        >
+            Analyze
+        </button>
+    </div>
+
+    <p
+        class="input-note"
+        id="musicInputNote"
+    ></p>
+
+</div>
 
             </div>
 
@@ -270,6 +345,159 @@
             </div>
 
         </section>
+
+
+        <!-- MUSIC DOWNLOAD RESULTS -->
+        <section
+            class="music-results-section"
+            id="musicResults"
+            style="display: none;"
+        >
+
+            <div class="section-heading results-heading">
+
+                <div>
+                    <span>DOWNLOAD</span>
+
+                    <h2>
+                        Your music
+                    </h2>
+                </div>
+
+                <div class="results-actions">
+
+                    <span class="download-another-text">
+                        Download another track
+                    </span>
+
+                    <button
+                        class="close-results"
+                        id="closeMusicResults"
+                        type="button"
+                        aria-label="Download another track"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="media-card music-card">
+
+                <div class="music-track-info">
+
+                    <img
+                        id="musicThumbnail"
+                        class="music-thumbnail"
+                        src=""
+                        alt="Album artwork"
+                    >
+
+                    <div class="music-track-details">
+
+                        <h3 id="musicTitle">
+                            Track title
+                        </h3>
+
+                        <p id="musicArtist">
+                            Artist
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="download-group">
+
+                    <div class="group-title">
+
+                        <div>
+
+                            <h3>
+                                Audio
+                            </h3>
+
+                            <span>
+                                Choose your format and quality
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            AUDIO
+                        </strong>
+
+                    </div>
+
+
+                    <div class="music-download-controls">
+
+                        <select id="musicFormat">
+
+                            <option value="mp3">
+                                MP3
+                            </option>
+
+                            <option value="m4a">
+                                M4A
+                            </option>
+
+                            <option value="opus">
+                                Opus
+                            </option>
+
+                            <option value="ogg">
+                                OGG
+                            </option>
+
+                            <option value="flac">
+                                FLAC
+                            </option>
+
+                            <option value="wav">
+                                WAV
+                            </option>
+
+                        </select>
+
+
+                        <select id="musicBitrate">
+
+                            <option value="128k">
+                                128 kbps
+                            </option>
+
+                            <option value="192k">
+                                192 kbps
+                            </option>
+
+                            <option value="320k" selected>
+                                320 kbps
+                            </option>
+
+                        </select>
+
+
+                        <button
+                            type="button"
+                            id="musicDownloadBtn"
+                        >
+                            Download
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HOW TO DOWNLOAD -->
 
 
         <!-- HOW TO DOWNLOAD -->
@@ -478,8 +706,15 @@
     </footer>
 
 
-    <script src="script.js"></script>
+        <script src="script.js"></script>
+
+    <!-- TinyAdz -->
+    <script
+        src="https://cdn.apitiny.net/scripts/v2.0/main.js"
+        data-site-id="6ab5f8d38802749077e4e3c0"
+        data-test-mode="false"
+        async
+    ></script>
 
 </body>
-
 </html>
