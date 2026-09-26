@@ -40,6 +40,16 @@ class AudioDownloadRequest(BaseModel):
     bitrate: int
 
 
+class MusicAnalyzeRequest(BaseModel):
+    url: str
+
+
+class MusicDownloadRequest(BaseModel):
+    url: str
+    format: str = "mp3"
+    bitrate: str = "320k"
+
+
 # ============================================================
 # CORS
 # ============================================================
@@ -172,6 +182,43 @@ def update_job(job_id, **values):
 def get_job(job_id):
     with download_jobs_lock:
         job = download_jobs.get(job_id)
+        if not job:
+            return None
+        return dict(job)
+
+
+# ============================================================
+# MUSIC DOWNLOAD JOB STORAGE
+# ============================================================
+
+music_jobs = {}
+music_jobs_lock = threading.Lock()
+
+
+def create_music_job():
+    job_id = str(uuid.uuid4())
+
+    with music_jobs_lock:
+        music_jobs[job_id] = {
+            "status": "starting",
+            "progress": 0,
+            "filename": None,
+            "filepath": None,
+            "error": None,
+        }
+
+    return job_id
+
+
+def update_music_job(job_id, **values):
+    with music_jobs_lock:
+        if job_id in music_jobs:
+            music_jobs[job_id].update(values)
+
+
+def get_music_job(job_id):
+    with music_jobs_lock:
+        job = music_jobs.get(job_id)
 
         if not job:
             return None
@@ -223,6 +270,52 @@ def create_progress_hook(job_id):
             update_job(
                 job_id,
                 status="merging",
+                progress=100
+            )
+
+    return progress_hook
+
+
+def create_music_progress_hook(job_id):
+    def progress_hook(data):
+        status = data.get("status")
+
+        if status == "downloading":
+            downloaded = data.get(
+                "downloaded_bytes",
+                0
+            )
+
+            total = (
+                data.get("total_bytes")
+                or
+                data.get("total_bytes_estimate")
+                or
+                0
+            )
+
+            percentage = 0
+
+            if total:
+                percentage = int(
+                    (downloaded / total) * 100
+                )
+
+                percentage = max(
+                    0,
+                    min(100, percentage)
+                )
+
+            update_music_job(
+                job_id,
+                status="downloading",
+                progress=percentage
+            )
+
+        elif status == "finished":
+            update_music_job(
+                job_id,
+                status="processing",
                 progress=100
             )
 
@@ -601,6 +694,372 @@ def analyze_media(request: AnalyzeRequest):
                 f"{str(error)}"
             )
         )
+
+
+# ============================================================
+# MUSIC ANALYZE
+# ============================================================
+
+@app.post("/api/music/analyze")
+def analyze_music(
+    request: MusicAnalyzeRequest
+):
+    url = request.url.strip()
+
+    if not url:
+        raise HTTPException(
+            status_code=400,
+            detail="Spotify URL is required."
+        )
+
+    if "spotify.com" not in url.lower():
+        raise HTTPException(
+            status_code=400,
+            detail="Please enter a valid Spotify URL."
+        )
+
+    try:
+        import requests
+
+        response = requests.get(
+            "https://open.spotify.com/oembed",
+            params={
+                "url": url
+            },
+            timeout=15,
+        )
+
+        response.raise_for_status()
+
+        metadata = response.json()
+
+        title = metadata.get(
+            "title"
+        )
+
+        artist = metadata.get(
+            "author_name"
+        )
+
+        thumbnail = metadata.get(
+            "thumbnail_url"
+        )
+
+        if not title:
+            raise Exception(
+                "No music information was found."
+            )
+
+        return {
+            "status": "success",
+            "tracks": [
+                {
+                    "title": title,
+                    "artists": (
+                        [artist]
+                        if artist
+                        else []
+                    ),
+                    "album": None,
+                    "duration": None,
+                    "thumbnail": thumbnail,
+                    "track_number": None,
+                    "spotify_url": url,
+                }
+            ],
+            "count": 1,
+        }
+
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Unable to reach Spotify. "
+                "Please try again."
+            )
+        )
+
+    except Exception as error:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Unable to analyze this Spotify URL: "
+                f"{str(error)}"
+            )
+        )
+
+
+# ============================================================
+# MUSIC DOWNLOAD WORKER
+# ============================================================
+
+def process_music_download(
+    job_id,
+    url,
+    output_format,
+    bitrate
+):
+    temp_dir = os.path.join(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__)
+            )
+        ),
+        "music_downloads",
+        job_id
+    )
+
+    os.makedirs(
+        temp_dir,
+        exist_ok=True
+    )
+
+    try:
+        update_music_job(
+            job_id,
+            status="processing",
+            progress=5
+        )
+
+        import subprocess
+
+        output_template = os.path.join(
+            temp_dir,
+            "{artists} - {title}.{output-ext}"
+        )
+
+        command = [
+            "python",
+            "-m",
+            "spotdl",
+            "download",
+            url,
+            "--format",
+            output_format,
+            "--bitrate",
+            bitrate,
+            "--output",
+            output_template,
+            "--overwrite",
+            "force",
+        ]
+
+        update_music_job(
+            job_id,
+            status="downloading",
+            progress=10
+        )
+
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+
+        if result.returncode != 0:
+            error_message = (
+                result.stderr.strip()
+                or
+                result.stdout.strip()
+                or
+                "Music download failed."
+            )
+
+            raise Exception(
+                error_message
+            )
+
+        files = []
+
+        for filename in os.listdir(
+            temp_dir
+        ):
+            filepath = os.path.join(
+                temp_dir,
+                filename
+            )
+
+            if os.path.isfile(filepath):
+                files.append(filepath)
+
+        if not files:
+            raise Exception(
+                "No music file was created."
+            )
+
+        filepath = files[0]
+
+        filename = os.path.basename(
+            filepath
+        )
+
+        update_music_job(
+            job_id,
+            status="completed",
+            progress=100,
+            filename=filename,
+            filepath=filepath
+        )
+
+    except subprocess.TimeoutExpired:
+        update_music_job(
+            job_id,
+            status="error",
+            error=(
+                "Music download took too long. "
+                "Please try again."
+            )
+        )
+
+        shutil.rmtree(
+            temp_dir,
+            ignore_errors=True
+        )
+
+    except Exception:
+        update_music_job(
+            job_id,
+            status="error",
+            error=(
+                "This music could not be downloaded."
+            )
+        )
+
+        shutil.rmtree(
+            temp_dir,
+            ignore_errors=True
+        )
+
+
+# ============================================================
+# START MUSIC DOWNLOAD
+# ============================================================
+
+@app.post("/api/music/download")
+def start_music_download(
+    request: MusicDownloadRequest
+):
+    url = request.url.strip()
+
+    if not url:
+        raise HTTPException(
+            status_code=400,
+            detail="Spotify URL is required."
+        )
+
+    if "spotify.com" not in url.lower():
+        raise HTTPException(
+            status_code=400,
+            detail="Please enter a valid Spotify URL."
+        )
+
+    allowed_formats = {
+        "mp3",
+        "m4a",
+        "opus",
+        "ogg",
+        "flac",
+        "wav",
+    }
+
+    if request.format not in allowed_formats:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported audio format."
+        )
+
+    allowed_bitrates = {
+        "128k",
+        "192k",
+        "320k",
+    }
+
+    if request.bitrate not in allowed_bitrates:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported audio quality."
+        )
+
+    job_id = create_music_job()
+
+    thread = threading.Thread(
+        target=process_music_download,
+        args=(
+            job_id,
+            url,
+            request.format,
+            request.bitrate,
+        ),
+        daemon=True,
+    )
+
+    thread.start()
+
+    return {
+        "status": "started",
+        "job_id": job_id,
+    }
+
+
+# ============================================================
+# START VIDEO DOWNLOAD
+# ============================================================
+
+# ============================================================
+# MUSIC DOWNLOAD STATUS
+# ============================================================
+
+@app.get("/api/music/download-status/{job_id}")
+def music_download_status(
+    job_id: str
+):
+    job = get_music_job(job_id)
+
+    if not job:
+        raise HTTPException(
+            status_code=404,
+            detail="Music download job not found."
+        )
+
+    return job
+
+
+# ============================================================
+# MUSIC DOWNLOAD FILE
+# ============================================================
+
+@app.get("/api/music/download-file/{job_id}")
+def music_download_file(
+    job_id: str
+):
+    job = get_music_job(job_id)
+
+    if not job:
+        raise HTTPException(
+            status_code=404,
+            detail="Music download job not found."
+        )
+
+    if job["status"] != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail="Music download is not ready."
+        )
+
+    filepath = job.get("filepath")
+
+    if not filepath or not os.path.isfile(filepath):
+        raise HTTPException(
+            status_code=404,
+            detail="Downloaded music file not found."
+        )
+
+    return FileResponse(
+        filepath,
+        filename=job["filename"],
+        media_type="audio/mpeg"
+    )
 
 
 # ============================================================

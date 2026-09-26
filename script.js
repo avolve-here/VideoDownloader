@@ -1,103 +1,277 @@
-const analyzeBtn = document.getElementById("analyzeBtn");
-const urlInput = document.getElementById("urlInput");
-const pasteBtn = document.getElementById("pasteBtn");
+/* ============================================================
+   THEME
+   ============================================================ */
 
-const API_BASE = "https://nuvexa-videodownloader.onrender.com";
+const themeToggle =
+    document.getElementById("themeToggle");
 
-pasteBtn.addEventListener("click", async () => {
-    try {
-        const text = await navigator.clipboard.readText();
+const themeIcon =
+    document.getElementById("themeIcon");
 
-        if (text) {
-            urlInput.value = text;
-            urlInput.focus();
+function updateThemeButton() {
+    const isDarkMode =
+        document.body.classList.contains("dark-mode");
 
-            pasteBtn.textContent = "Pasted ✓";
-
-            setTimeout(() => {
-                pasteBtn.textContent = "Paste";
-            }, 1500);
-        } else {
-            pasteBtn.textContent = "Nothing to paste";
-
-            setTimeout(() => {
-                pasteBtn.textContent = "Paste";
-            }, 1500);
-        }
-
-    } catch (error) {
-        pasteBtn.textContent = "Use Ctrl+V";
-
-        setTimeout(() => {
-            pasteBtn.textContent = "Paste";
-        }, 1500);
+    if (themeIcon) {
+        themeIcon.textContent =
+            isDarkMode ? "☀" : "☾";
     }
+
+    if (themeToggle) {
+        const label =
+            isDarkMode
+                ? "Switch to light mode"
+                : "Switch to dark mode";
+
+        themeToggle.setAttribute(
+            "aria-label",
+            label
+        );
+
+        themeToggle.setAttribute(
+            "title",
+            label
+        );
+    }
+}
+
+updateThemeButton();
+
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+
+        document.body.classList.toggle(
+            "dark-mode"
+        );
+
+        updateThemeButton();
+    });
+}
+
+
+/* ============================================================
+   DOWNLOAD TYPE
+   ============================================================ */
+
+const downloadTypeButtons =
+    document.querySelectorAll(".download-type-button");
+
+downloadTypeButtons.forEach((button) => {
+
+    button.addEventListener("click", () => {
+
+        downloadTypeButtons.forEach((item) => {
+            item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        const selectedType =
+            button.dataset.type;
+
+        const videoMode =
+            document.getElementById("videoMode");
+
+        const musicMode =
+            document.getElementById("musicMode");
+
+        const videoResults =
+            document.getElementById("results");
+
+        const musicResults =
+            document.getElementById("musicResults");
+
+        if (selectedType === "music") {
+
+            videoMode.style.display = "none";
+            musicMode.style.display = "block";
+            videoResults.style.display = "none";
+            musicResults.style.display = "none";
+
+        } else {
+
+            videoMode.style.display = "block";
+            musicMode.style.display = "none";
+            musicResults.style.display = "none";
+        }
+    });
 });
 
-const searchPanel = document.getElementById("downloader");
-const resultsSection = document.getElementById("results");
-const closeResults = document.getElementById("closeResults");
 
-const mediaTitle = document.getElementById("mediaTitle");
-const mediaDetails = document.getElementById("mediaDetails");
+/* ============================================================
+   MAIN ELEMENTS
+   ============================================================ */
 
-const mediaPlayer = document.getElementById("mediaPlayer");
-const playerPlaceholder = document.getElementById("playerPlaceholder");
+const analyzeBtn =
+    document.getElementById("analyzeBtn");
+
+const urlInput =
+    document.getElementById("urlInput");
+
+const pasteBtn =
+    document.getElementById("pasteBtn");
+
+const API_BASE =
+    "http://127.0.0.1:8000";
+
+
+/* ============================================================
+   PASTE
+   ============================================================ */
+
+pasteBtn.addEventListener(
+    "click",
+    async () => {
+
+        try {
+
+            const text =
+                await navigator.clipboard.readText();
+
+            if (text) {
+
+                urlInput.value = text;
+                urlInput.focus();
+
+                pasteBtn.textContent =
+                    "Pasted ✓";
+
+                setTimeout(() => {
+                    pasteBtn.textContent =
+                        "Paste";
+                }, 1500);
+
+            } else {
+
+                pasteBtn.textContent =
+                    "Nothing to paste";
+
+                setTimeout(() => {
+                    pasteBtn.textContent =
+                        "Paste";
+                }, 1500);
+            }
+
+        } catch (error) {
+
+            pasteBtn.textContent =
+                "Use Ctrl+V";
+
+            setTimeout(() => {
+                pasteBtn.textContent =
+                    "Paste";
+            }, 1500);
+        }
+    }
+);
+
+
+/* ============================================================
+   VIDEO ELEMENTS
+   ============================================================ */
+
+const searchPanel =
+    document.getElementById("downloader");
+
+const resultsSection =
+    document.getElementById("results");
+
+const closeResults =
+    document.getElementById("closeResults");
+
+const mediaTitle =
+    document.getElementById("mediaTitle");
+
+const mediaDetails =
+    document.getElementById("mediaDetails");
+
+const mediaPlayer =
+    document.getElementById("mediaPlayer");
+
+const playerPlaceholder =
+    document.getElementById("playerPlaceholder");
 
 let currentFormats = [];
+
 let previewObjectUrl = null;
 
 
-// ============================================================
-// INITIAL STATE
-// ============================================================
+/* ============================================================
+   INITIAL STATE
+   ============================================================ */
 
 resultsSection.style.display = "none";
+
 searchPanel.style.display = "flex";
 
 
-// ============================================================
-// ANALYZE EVENTS
-// ============================================================
+/* ============================================================
+   ANALYZE EVENTS
+   ============================================================ */
 
-analyzeBtn.addEventListener("click", analyzeMedia);
+analyzeBtn.addEventListener(
+    "click",
+    analyzeMedia
+);
 
-urlInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        analyzeMedia();
+urlInput.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (event.key === "Enter") {
+            analyzeMedia();
+        }
     }
-});
+);
 
 
-// ============================================================
-// ANALYZE MEDIA
-// ============================================================
+/* ============================================================
+   ANALYZE MEDIA
+   ============================================================ */
 
 async function analyzeMedia() {
 
-    const url = urlInput.value.trim();
+    const url =
+        urlInput.value.trim();
 
     if (!url) {
-        showError("Please paste a video or media URL.");
+
+        showError(
+            "Please paste a video or media URL."
+        );
+
         return;
     }
 
     try {
-        const parsedUrl = new URL(url);
 
-        if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+        const parsedUrl =
+            new URL(url);
+
+        if (
+            !["http:", "https:"]
+                .includes(parsedUrl.protocol)
+        ) {
             throw new Error();
         }
 
     } catch {
-        showError("Please enter a valid URL.");
+
+        showError(
+            "Please enter a valid URL."
+        );
+
         return;
     }
 
     analyzeBtn.disabled = true;
-    analyzeBtn.textContent = "Analyzing...";
 
-    mediaTitle.textContent = "Analyzing media...";
+    analyzeBtn.textContent =
+        "Analyzing...";
+
+    mediaTitle.textContent =
+        "Analyzing media...";
+
     mediaDetails.textContent =
         "Nuvexa is retrieving media information.";
 
@@ -105,39 +279,52 @@ async function analyzeMedia() {
 
     try {
 
-        const response = await fetch(
-            `${API_BASE}/api/analyze`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    url: url
-                })
-            }
-        );
+        const response =
+            await fetch(
+                `${API_BASE}/api/analyze`,
+                {
+                    method: "POST",
 
-        const data = await response.json();
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        url: url
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
 
         if (!response.ok) {
+
             throw new Error(
-                data.detail || "Analysis failed."
+                data.detail ||
+                "Analysis failed."
             );
         }
 
-        currentFormats = data.formats || [];
+        currentFormats =
+            data.formats || [];
 
         mediaTitle.textContent =
-            data.title || "Media detected";
+            data.title ||
+            "Media detected";
 
         const details = [];
 
         if (data.uploader) {
-            details.push(`By ${data.uploader}`);
+
+            details.push(
+                `By ${data.uploader}`
+            );
         }
 
         if (data.duration) {
+
             details.push(
                 `Duration: ${formatDuration(data.duration)}`
             );
@@ -155,11 +342,17 @@ async function analyzeMedia() {
             data.thumbnail
         );
 
-        renderVideoOptions(currentFormats);
+        renderVideoOptions(
+            currentFormats
+        );
+
         renderAudioOptions();
 
-        searchPanel.style.display = "none";
-        resultsSection.style.display = "block";
+        searchPanel.style.display =
+            "none";
+
+        resultsSection.style.display =
+            "block";
 
         resultsSection.scrollIntoView({
             behavior: "smooth",
@@ -174,22 +367,27 @@ async function analyzeMedia() {
         );
 
         showError(
-    "This video is not available for download."
-);
+            "This video is not available for download."
+        );
 
     } finally {
 
         analyzeBtn.disabled = false;
-        analyzeBtn.textContent = "Analyze";
+
+        analyzeBtn.textContent =
+            "Analyze";
     }
 }
 
 
-// ============================================================
-// LOAD PLAYABLE PREVIEW
-// ============================================================
+/* ============================================================
+   LOAD PLAYABLE PREVIEW
+   ============================================================ */
 
-async function loadPreview(previewUrl, thumbnail) {
+async function loadPreview(
+    previewUrl,
+    thumbnail
+) {
 
     if (!mediaPlayer) {
         return;
@@ -197,32 +395,49 @@ async function loadPreview(previewUrl, thumbnail) {
 
     mediaPlayer.pause();
 
-    mediaPlayer.removeAttribute("src");
-    mediaPlayer.removeAttribute("poster");
+    mediaPlayer.removeAttribute(
+        "src"
+    );
+
+    mediaPlayer.removeAttribute(
+        "poster"
+    );
 
     mediaPlayer.load();
 
     if (previewObjectUrl) {
-        URL.revokeObjectURL(previewObjectUrl);
+
+        URL.revokeObjectURL(
+            previewObjectUrl
+        );
+
         previewObjectUrl = null;
     }
 
     if (thumbnail) {
-        mediaPlayer.poster = thumbnail;
+        mediaPlayer.poster =
+            thumbnail;
     }
 
     if (playerPlaceholder) {
-    playerPlaceholder.style.display = "flex";
-    playerPlaceholder.style.backgroundImage = "";
 
-    const placeholderText =
-        playerPlaceholder.querySelector("span");
+        playerPlaceholder.style.display =
+            "flex";
 
-    if (placeholderText) {
-        placeholderText.textContent =
-            "Loading preview...";
+        playerPlaceholder.style.backgroundImage =
+            "";
+
+        const placeholderText =
+            playerPlaceholder.querySelector(
+                "span"
+            );
+
+        if (placeholderText) {
+
+            placeholderText.textContent =
+                "Loading preview...";
+        }
     }
-}
 
     try {
 
@@ -231,7 +446,8 @@ async function loadPreview(previewUrl, thumbnail) {
                 urlInput.value.trim()
             )}`;
 
-        const response = await fetch(sourceUrl);
+        const response =
+            await fetch(sourceUrl);
 
         if (!response.ok) {
 
@@ -239,22 +455,34 @@ async function loadPreview(previewUrl, thumbnail) {
                 "Preview could not be loaded.";
 
             try {
-                const data = await response.json();
-                message = data.detail || message;
+
+                const data =
+                    await response.json();
+
+                message =
+                    data.detail ||
+                    message;
+
             } catch {}
 
             throw new Error(message);
         }
 
-        const blob = await response.blob();
+        const blob =
+            await response.blob();
 
-        previewObjectUrl = URL.createObjectURL(blob);
+        previewObjectUrl =
+            URL.createObjectURL(blob);
 
-        mediaPlayer.src = previewObjectUrl;
+        mediaPlayer.src =
+            previewObjectUrl;
+
         mediaPlayer.load();
 
         if (playerPlaceholder) {
-            playerPlaceholder.style.display = "none";
+
+            playerPlaceholder.style.display =
+                "none";
         }
 
     } catch (error) {
@@ -264,22 +492,27 @@ async function loadPreview(previewUrl, thumbnail) {
             error
         );
 
-        showPlayerPlaceholder(thumbnail);
+        showPlayerPlaceholder(
+            thumbnail
+        );
     }
 }
 
 
-// ============================================================
-// PLAYER PLACEHOLDER
-// ============================================================
+/* ============================================================
+   PLAYER PLACEHOLDER
+   ============================================================ */
 
-function showPlayerPlaceholder(thumbnail) {
+function showPlayerPlaceholder(
+    thumbnail
+) {
 
     if (!playerPlaceholder) {
         return;
     }
 
-    playerPlaceholder.style.display = "flex";
+    playerPlaceholder.style.display =
+        "flex";
 
     if (thumbnail) {
 
@@ -289,31 +522,39 @@ function showPlayerPlaceholder(thumbnail) {
                 rgba(16, 38, 45, 0.78)
             ), url("${thumbnail}")`;
 
-        playerPlaceholder.style.backgroundSize = "cover";
-        playerPlaceholder.style.backgroundPosition = "center";
+        playerPlaceholder.style.backgroundSize =
+            "cover";
+
+        playerPlaceholder.style.backgroundPosition =
+            "center";
 
     } else {
 
-        playerPlaceholder.style.backgroundImage = "";
+        playerPlaceholder.style.backgroundImage =
+            "";
     }
 }
 
 
-// ============================================================
-// VIDEO OPTIONS
-// ============================================================
+/* ============================================================
+   VIDEO OPTIONS
+   ============================================================ */
 
 function renderVideoOptions(formats) {
 
     const groups =
-        document.querySelectorAll(".download-group");
+        document.querySelectorAll(
+            ".download-group"
+        );
 
     if (groups.length === 0) {
         return;
     }
 
     const videoContainer =
-        groups[0].querySelector(".download-options");
+        groups[0].querySelector(
+            ".download-options"
+        );
 
     if (!videoContainer) {
         return;
@@ -322,21 +563,42 @@ function renderVideoOptions(formats) {
     videoContainer.innerHTML = "";
 
     const uniqueFormats = [];
-    const seenHeights = new Set();
+
+    const seenHeights =
+        new Set();
 
     formats
-        .filter(format => format.height)
-        .sort((a, b) => b.height - a.height)
-        .forEach(format => {
+        .filter(
+            (format) =>
+                format.height
+        )
+        .sort(
+            (a, b) =>
+                b.height - a.height
+        )
+        .forEach(
+            (format) => {
 
-            if (!seenHeights.has(format.height)) {
+                if (
+                    !seenHeights.has(
+                        format.height
+                    )
+                ) {
 
-                seenHeights.add(format.height);
-                uniqueFormats.push(format);
+                    seenHeights.add(
+                        format.height
+                    );
+
+                    uniqueFormats.push(
+                        format
+                    );
+                }
             }
-        });
+        );
 
-    if (uniqueFormats.length === 0) {
+    if (
+        uniqueFormats.length === 0
+    ) {
 
         videoContainer.innerHTML =
             "<p>No video formats detected.</p>";
@@ -346,80 +608,131 @@ function renderVideoOptions(formats) {
 
     const visibleFormats =
         uniqueFormats.filter(
-            format => format.height >= 360
+            (format) =>
+                format.height >= 360
         );
 
     const hiddenFormats =
         uniqueFormats.filter(
-            format => format.height < 360
+            (format) =>
+                format.height < 360
         );
 
-    visibleFormats.forEach((format, index) => {
-    const button =
-        createVideoButton(format, index === 0);
+    visibleFormats.forEach(
+        (format, index) => {
 
-    videoContainer.appendChild(button);
-});
-    if (hiddenFormats.length > 0) {
+            const button =
+                createVideoButton(
+                    format,
+                    index === 0
+                );
+
+            videoContainer.appendChild(
+                button
+            );
+        }
+    );
+
+    if (
+        hiddenFormats.length > 0
+    ) {
 
         const moreButton =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
-        moreButton.type = "button";
+        moreButton.type =
+            "button";
+
         moreButton.className =
             "more-quality-button";
 
-        moreButton.textContent = "More ▾";
+        moreButton.textContent =
+            "More ▾";
 
         const hiddenContainer =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         hiddenContainer.className =
             "more-quality-options";
 
-        hiddenContainer.style.display = "none";
+        hiddenContainer.style.display =
+            "none";
 
-        hiddenFormats.forEach(format => {
+        hiddenFormats.forEach(
+            (format) => {
 
-            const button =
-                createVideoButton(format);
+                const button =
+                    createVideoButton(
+                        format
+                    );
 
-            hiddenContainer.appendChild(button);
-        });
-
-        moreButton.addEventListener("click", () => {
-
-            const isHidden =
-                hiddenContainer.style.display === "none";
-
-            if (isHidden) {
-
-                hiddenContainer.style.display = "flex";
-                moreButton.textContent = "Less ▴";
-
-            } else {
-
-                hiddenContainer.style.display = "none";
-                moreButton.textContent = "More ▾";
+                hiddenContainer.appendChild(
+                    button
+                );
             }
-        });
+        );
 
-        videoContainer.appendChild(moreButton);
-        videoContainer.appendChild(hiddenContainer);
+        moreButton.addEventListener(
+            "click",
+            () => {
+
+                const isHidden =
+                    hiddenContainer.style.display ===
+                    "none";
+
+                if (isHidden) {
+
+                    hiddenContainer.style.display =
+                        "flex";
+
+                    moreButton.textContent =
+                        "Less ▴";
+
+                } else {
+
+                    hiddenContainer.style.display =
+                        "none";
+
+                    moreButton.textContent =
+                        "More ▾";
+                }
+            }
+        );
+
+        videoContainer.appendChild(
+            moreButton
+        );
+
+        videoContainer.appendChild(
+            hiddenContainer
+        );
     }
 }
 
 
-// ============================================================
-// CREATE VIDEO BUTTON
-// ============================================================
+/* ============================================================
+   CREATE VIDEO BUTTON
+   ============================================================ */
 
-function createVideoButton(format, isOriginal = false) {
+function createVideoButton(
+    format,
+    isOriginal = false
+) {
+
     const button =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
 
-    button.type = "button";
-    button.className = "download-option";
+    button.type =
+        "button";
+
+    button.className =
+        "download-option";
 
     const formatName =
         format.ext
@@ -428,40 +741,64 @@ function createVideoButton(format, isOriginal = false) {
 
     button.innerHTML = `
         <div>
-            <strong>${isOriginal ? "Original quality" : `${format.height}p`}</strong>
-            <small>${formatName}</small>
+            <strong>
+                ${
+                    isOriginal
+                        ? "Original quality"
+                        : `${format.height}p`
+                }
+            </strong>
+
+            <small>
+                ${formatName}
+            </small>
         </div>
-        <span>Download</span>
+
+        <span>
+            Download
+        </span>
     `;
 
-    button.addEventListener("click", () => {
-        downloadFormat(format, button);
-    });
+    button.addEventListener(
+        "click",
+        () => {
+            downloadFormat(
+                format,
+                button
+            );
+        }
+    );
 
     return button;
 }
 
-// ============================================================
-// AUDIO OPTIONS
-// ============================================================
+
+/* ============================================================
+   AUDIO OPTIONS
+   ============================================================ */
 
 function renderAudioOptions() {
 
     const groups =
-        document.querySelectorAll(".download-group");
+        document.querySelectorAll(
+            ".download-group"
+        );
 
     if (groups.length < 2) {
         return;
     }
 
     const audioContainer =
-        groups[1].querySelector(".download-options");
+        groups[1].querySelector(
+            ".download-options"
+        );
 
     if (!audioContainer) {
         return;
     }
 
-    audioContainer.innerHTML = "";
+    audioContainer.innerHTML =
+        "";
 
     const audioQualities = [
         {
@@ -478,50 +815,66 @@ function renderAudioOptions() {
         }
     ];
 
-    audioQualities.forEach(option => {
+    audioQualities.forEach(
+        (option) => {
 
-        const button =
-            document.createElement("button");
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.type = "button";
-        button.className = "download-option";
+            button.type =
+                "button";
 
-        button.innerHTML = `
-            <div>
-                <strong>
-                    ${option.bitrate} kbps
-                </strong>
+            button.className =
+                "download-option";
 
-                <small>
-                    ${option.format}
-                </small>
-            </div>
+            button.innerHTML = `
+                <div>
+                    <strong>
+                        ${option.bitrate} kbps
+                    </strong>
 
-            <span>
-                Download
-            </span>
-        `;
+                    <small>
+                        ${option.format}
+                    </small>
+                </div>
 
-        button.addEventListener("click", () => {
+                <span>
+                    Download
+                </span>
+            `;
 
-            downloadAudio(
-                option.bitrate,
+            button.addEventListener(
+                "click",
+                () => {
+
+                    downloadAudio(
+                        option.bitrate,
+                        button
+                    );
+                }
+            );
+
+            audioContainer.appendChild(
                 button
             );
-        });
-
-        audioContainer.appendChild(button);
-    });
+        }
+    );
 }
 
 
-// ============================================================
-// VIDEO DOWNLOAD
-// ============================================================
+/* ============================================================
+   VIDEO DOWNLOAD
+   ============================================================ */
 
-async function downloadFormat(format, clickedButton) {
+async function downloadFormat(
+    format,
+    clickedButton
+) {
 
-    const url = urlInput.value.trim();
+    const url =
+        urlInput.value.trim();
 
     if (!url) {
 
@@ -532,32 +885,40 @@ async function downloadFormat(format, clickedButton) {
         return;
     }
 
-    clickedButton.disabled = true;
+    clickedButton.disabled =
+        true;
 
     const statusText =
-        clickedButton.querySelector("span");
+        clickedButton.querySelector(
+            "span"
+        );
 
-    statusText.textContent = "Preparing...";
+    statusText.textContent =
+        "Preparing...";
 
     try {
 
-        const response = await fetch(
-            `${API_BASE}/api/download`,
-            {
-                method: "POST",
+        const response =
+            await fetch(
+                `${API_BASE}/api/download`,
+                {
+                    method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                body: JSON.stringify({
-                    url: url,
-                    format_id: format.format_id
-                })
-            }
-        );
+                    body: JSON.stringify({
+                        url: url,
+                        format_id:
+                            format.format_id
+                    })
+                }
+            );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         if (!response.ok) {
 
@@ -586,37 +947,47 @@ async function downloadFormat(format, clickedButton) {
             error
         );
 
-        statusText.textContent = "Download";
-        clickedButton.disabled = false;
+        statusText.textContent =
+            "Download";
+
+        clickedButton.disabled =
+            false;
 
         alert(
-    "This video is not available for download."
-);
+            "This video is not available for download."
+        );
     }
 }
 
 
-// ============================================================
-// MONITOR DOWNLOAD
-// ============================================================
+/* ============================================================
+   MONITOR DOWNLOAD
+   ============================================================ */
 
 async function monitorDownload(
     jobId,
     clickedButton
 ) {
+
     const statusText =
-        clickedButton.querySelector("span");
-
-    while (true) {
-        await sleep(700);
-
-        const response = await fetch(
-            `${API_BASE}/api/download-status/${jobId}`
+        clickedButton.querySelector(
+            "span"
         );
 
-        const data = await response.json();
+    while (true) {
+
+        await sleep(700);
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/download-status/${jobId}`
+            );
+
+        const data =
+            await response.json();
 
         if (!response.ok) {
+
             throw new Error(
                 data.detail ||
                 "Unable to check download status."
@@ -627,35 +998,49 @@ async function monitorDownload(
             data.status === "starting" ||
             data.status === "preparing"
         ) {
+
             statusText.textContent =
                 "Preparing...";
+
         } else if (
             data.status === "downloading"
         ) {
+
             statusText.textContent =
                 `Downloading ${data.progress}%`;
+
         } else if (
             data.status === "merging"
         ) {
+
             statusText.textContent =
                 "Merging...";
+
         } else if (
             data.status === "completed"
         ) {
+
             statusText.textContent =
                 "Done ✓";
 
-            await fetchCompletedFile(jobId);
+            await fetchCompletedFile(
+                jobId
+            );
+
             await sleep(1500);
 
             statusText.textContent =
                 "Download";
 
-            clickedButton.disabled = false;
+            clickedButton.disabled =
+                false;
+
             return;
+
         } else if (
             data.status === "error"
         ) {
+
             throw new Error(
                 "This video is not available for download."
             );
@@ -664,15 +1049,18 @@ async function monitorDownload(
 }
 
 
-// ============================================================
-// FETCH FINAL COMPLETED FILE
-// ============================================================
+/* ============================================================
+   FETCH FINAL COMPLETED FILE
+   ============================================================ */
 
-async function fetchCompletedFile(jobId) {
+async function fetchCompletedFile(
+    jobId
+) {
 
-    const response = await fetch(
-        `${API_BASE}/api/download-file/${jobId}`
-    );
+    const response =
+        await fetch(
+            `${API_BASE}/api/download-file/${jobId}`
+        );
 
     if (!response.ok) {
 
@@ -690,28 +1078,36 @@ async function fetchCompletedFile(jobId) {
 
         } catch {}
 
-        throw new Error(errorMessage);
+        throw new Error(
+            errorMessage
+        );
     }
 
     const blob =
         await response.blob();
 
     const filename =
-        getFilenameFromResponse(response);
+        getFilenameFromResponse(
+            response
+        );
 
     saveBlob(
         blob,
         filename ||
-        `${safeFilename(mediaTitle.textContent)}.mp4`
+            `${safeFilename(
+                mediaTitle.textContent
+            )}.mp4`
     );
 }
 
 
-// ============================================================
-// GET SERVER FILENAME
-// ============================================================
+/* ============================================================
+   GET SERVER FILENAME
+   ============================================================ */
 
-function getFilenameFromResponse(response) {
+function getFilenameFromResponse(
+    response
+) {
 
     const disposition =
         response.headers.get(
@@ -733,16 +1129,17 @@ function getFilenameFromResponse(response) {
 }
 
 
-// ============================================================
-// AUDIO DOWNLOAD
-// ============================================================
+/* ============================================================
+   AUDIO DOWNLOAD
+   ============================================================ */
 
 async function downloadAudio(
     bitrate,
     clickedButton
 ) {
 
-    const url = urlInput.value.trim();
+    const url =
+        urlInput.value.trim();
 
     if (!url) {
 
@@ -753,10 +1150,13 @@ async function downloadAudio(
         return;
     }
 
-    clickedButton.disabled = true;
+    clickedButton.disabled =
+        true;
 
     const statusText =
-        clickedButton.querySelector("span");
+        clickedButton.querySelector(
+            "span"
+        );
 
     const originalText =
         statusText.textContent;
@@ -766,22 +1166,23 @@ async function downloadAudio(
 
     try {
 
-        const response = await fetch(
-            `${API_BASE}/api/download-audio`,
-            {
-                method: "POST",
+        const response =
+            await fetch(
+                `${API_BASE}/api/download-audio`,
+                {
+                    method: "POST",
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                body: JSON.stringify({
-                    url: url,
-                    bitrate: bitrate
-                })
-            }
-        );
+                    body: JSON.stringify({
+                        url: url,
+                        bitrate: bitrate
+                    })
+                }
+            );
 
         if (!response.ok) {
 
@@ -799,7 +1200,9 @@ async function downloadAudio(
 
             } catch {}
 
-            throw new Error(errorMessage);
+            throw new Error(
+                errorMessage
+            );
         }
 
         const blob =
@@ -813,55 +1216,74 @@ async function downloadAudio(
         );
 
     } catch (error) {
-    alert(
-        "This video is not available for download."
-    );
-} finally {
 
-        clickedButton.disabled = false;
-        statusText.textContent = originalText;
+        console.error(
+            "Nuvexa audio download error:",
+            error
+        );
+
+        alert(
+            "This video is not available for download."
+        );
+
+    } finally {
+
+        clickedButton.disabled =
+            false;
+
+        statusText.textContent =
+            originalText;
     }
 }
 
 
-// ============================================================
-// CLOSE RESULTS
-// ============================================================
+/* ============================================================
+   CLOSE RESULTS
+   ============================================================ */
 
-closeResults.addEventListener("click", () => {
+closeResults.addEventListener(
+    "click",
+    () => {
 
-    resetPlayer();
+        resetPlayer();
 
-    document
-        .querySelectorAll(".download-options")
-        .forEach(container => {
-            container.innerHTML = "";
+        document
+            .querySelectorAll(
+                ".download-options"
+            )
+            .forEach(
+                (container) => {
+                    container.innerHTML =
+                        "";
+                }
+            );
+
+        mediaTitle.textContent =
+            "Media title";
+
+        mediaDetails.textContent =
+            "Media details";
+
+        urlInput.value =
+            "";
+
+        resultsSection.style.display =
+            "none";
+
+        searchPanel.style.display =
+            "flex";
+
+        searchPanel.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
         });
-
-    mediaTitle.textContent =
-        "Media title";
-
-    mediaDetails.textContent =
-        "Media details";
-
-    urlInput.value = "";
-
-    resultsSection.style.display =
-        "none";
-
-    searchPanel.style.display =
-        "flex";
-
-    searchPanel.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
-});
+    }
+);
 
 
-// ============================================================
-// RESET PLAYER
-// ============================================================
+/* ============================================================
+   RESET PLAYER
+   ============================================================ */
 
 function resetPlayer() {
 
@@ -871,8 +1293,13 @@ function resetPlayer() {
 
     mediaPlayer.pause();
 
-    mediaPlayer.removeAttribute("src");
-    mediaPlayer.removeAttribute("poster");
+    mediaPlayer.removeAttribute(
+        "src"
+    );
+
+    mediaPlayer.removeAttribute(
+        "poster"
+    );
 
     mediaPlayer.load();
 
@@ -882,7 +1309,8 @@ function resetPlayer() {
             previewObjectUrl
         );
 
-        previewObjectUrl = null;
+        previewObjectUrl =
+            null;
     }
 
     if (playerPlaceholder) {
@@ -896,22 +1324,34 @@ function resetPlayer() {
 }
 
 
-// ============================================================
-// SAVE FILE
-// ============================================================
+/* ============================================================
+   SAVE FILE
+   ============================================================ */
 
-function saveBlob(blob, filename) {
+function saveBlob(
+    blob,
+    filename
+) {
 
     const downloadUrl =
-        window.URL.createObjectURL(blob);
+        window.URL.createObjectURL(
+            blob
+        );
 
     const link =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
 
-    link.href = downloadUrl;
-    link.download = filename;
+    link.href =
+        downloadUrl;
 
-    document.body.appendChild(link);
+    link.download =
+        filename;
+
+    document.body.appendChild(
+        link
+    );
 
     link.click();
 
@@ -927,11 +1367,13 @@ function saveBlob(blob, filename) {
 }
 
 
-// ============================================================
-// SAFE FILENAME
-// ============================================================
+/* ============================================================
+   SAFE FILENAME
+   ============================================================ */
 
-function safeFilename(name) {
+function safeFilename(
+    name
+) {
 
     return (
         name ||
@@ -942,15 +1384,20 @@ function safeFilename(name) {
             ""
         )
         .trim()
-        .substring(0, 150);
+        .substring(
+            0,
+            150
+        );
 }
 
 
-// ============================================================
-// FORMAT DURATION
-// ============================================================
+/* ============================================================
+   FORMAT DURATION
+   ============================================================ */
 
-function formatDuration(seconds) {
+function formatDuration(
+    seconds
+) {
 
     const totalSeconds =
         Number(seconds);
@@ -960,6 +1407,7 @@ function formatDuration(seconds) {
             totalSeconds
         )
     ) {
+
         return "Unknown";
     }
 
@@ -994,23 +1442,31 @@ function formatDuration(seconds) {
 }
 
 
-// ============================================================
-// SLEEP
-// ============================================================
+/* ============================================================
+   SLEEP
+   ============================================================ */
 
-function sleep(milliseconds) {
+function sleep(
+    milliseconds
+) {
 
-    return new Promise(resolve =>
-        setTimeout(resolve, milliseconds)
+    return new Promise(
+        (resolve) =>
+            setTimeout(
+                resolve,
+                milliseconds
+            )
     );
 }
 
 
-// ============================================================
-// ERROR
-// ============================================================
+/* ============================================================
+   ERROR
+   ============================================================ */
 
-function showError(message) {
+function showError(
+    message
+) {
 
     console.error(
         "Nuvexa error:",
@@ -1019,11 +1475,591 @@ function showError(message) {
 
     alert(message);
 
-    searchPanel.style.display = "flex";
-    resultsSection.style.display = "none";
+    searchPanel.style.display =
+        "flex";
 
-    analyzeBtn.disabled = false;
-    analyzeBtn.textContent = "Analyze";
+    resultsSection.style.display =
+        "none";
+
+    analyzeBtn.disabled =
+        false;
+
+    analyzeBtn.textContent =
+        "Analyze";
 
     urlInput.focus();
 }
+
+
+/* ============================================================
+   MUSIC DOWNLOADER
+   ============================================================ */
+
+const musicUrlInput =
+    document.getElementById(
+        "musicUrlInput"
+    );
+
+const musicPasteBtn =
+    document.getElementById(
+        "musicPasteBtn"
+    );
+
+const musicAnalyzeBtn =
+    document.getElementById(
+        "musicAnalyzeBtn"
+    );
+
+const musicMode =
+    document.getElementById(
+        "musicMode"
+    );
+
+const musicResults =
+    document.getElementById(
+        "musicResults"
+    );
+
+const closeMusicResults =
+    document.getElementById(
+        "closeMusicResults"
+    );
+
+const musicThumbnail =
+    document.getElementById(
+        "musicThumbnail"
+    );
+
+const musicTitle =
+    document.getElementById(
+        "musicTitle"
+    );
+
+const musicArtist =
+    document.getElementById(
+        "musicArtist"
+    );
+
+const musicFormat =
+    document.getElementById(
+        "musicFormat"
+    );
+
+const musicBitrate =
+    document.getElementById(
+        "musicBitrate"
+    );
+
+const musicDownloadBtn =
+    document.getElementById(
+        "musicDownloadBtn"
+    );
+
+
+/* ============================================================
+   MUSIC PASTE
+   ============================================================ */
+
+musicPasteBtn.addEventListener(
+    "click",
+    async () => {
+
+        try {
+
+            const text =
+                await navigator.clipboard.readText();
+
+            if (text) {
+
+                musicUrlInput.value =
+                    text;
+
+                musicUrlInput.focus();
+
+                musicPasteBtn.textContent =
+                    "Pasted ✓";
+
+                setTimeout(() => {
+
+                    musicPasteBtn.textContent =
+                        "Paste";
+
+                }, 1500);
+
+            } else {
+
+                musicPasteBtn.textContent =
+                    "Nothing to paste";
+
+                setTimeout(() => {
+
+                    musicPasteBtn.textContent =
+                        "Paste";
+
+                }, 1500);
+            }
+
+        } catch (error) {
+
+            musicPasteBtn.textContent =
+                "Use Ctrl+V";
+
+            setTimeout(() => {
+
+                musicPasteBtn.textContent =
+                    "Paste";
+
+            }, 1500);
+        }
+    }
+);
+
+
+/* ============================================================
+   MUSIC ANALYZE EVENTS
+   ============================================================ */
+
+musicAnalyzeBtn.addEventListener(
+    "click",
+    analyzeMusic
+);
+
+musicUrlInput.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (event.key === "Enter") {
+            analyzeMusic();
+        }
+    }
+);
+
+
+/* ============================================================
+   ANALYZE MUSIC
+   ============================================================ */
+
+async function analyzeMusic() {
+
+    const url =
+        musicUrlInput.value.trim();
+
+    if (!url) {
+
+        alert(
+            "Please paste a Spotify URL."
+        );
+
+        return;
+    }
+
+    if (
+        !url.includes(
+            "spotify.com"
+        )
+    ) {
+
+        alert(
+            "Please enter a valid Spotify URL."
+        );
+
+        return;
+    }
+
+    musicAnalyzeBtn.disabled =
+        true;
+
+    musicAnalyzeBtn.textContent =
+        "Analyzing...";
+
+    musicTitle.textContent =
+        "Analyzing music...";
+
+    musicArtist.textContent =
+        "Nuvexa is retrieving track information.";
+
+    musicResults.style.display =
+        "block";
+
+    musicResults.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/music/analyze`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        url: url
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Music analysis failed."
+            );
+        }
+
+        if (
+            !data.tracks ||
+            data.tracks.length === 0
+        ) {
+
+            throw new Error(
+                "No music was found."
+            );
+        }
+
+        const track =
+            data.tracks[0];
+
+        musicTitle.textContent =
+            track.title ||
+            "Unknown track";
+
+        musicArtist.textContent =
+            track.artists &&
+            track.artists.length > 0
+                ? track.artists.join(", ")
+                : "Artist information unavailable";
+
+        if (track.thumbnail) {
+
+            musicThumbnail.src =
+                track.thumbnail;
+
+            musicThumbnail.style.display =
+                "block";
+
+        } else {
+
+            musicThumbnail.removeAttribute(
+                "src"
+            );
+
+            musicThumbnail.style.display =
+                "none";
+        }
+
+        musicResults.style.display =
+            "block";
+
+        musicResults.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Nuvexa music analyze error:",
+            error
+        );
+
+        musicResults.style.display =
+            "none";
+
+        alert(
+            "This music could not be analyzed."
+        );
+
+    } finally {
+
+        musicAnalyzeBtn.disabled =
+            false;
+
+        musicAnalyzeBtn.textContent =
+            "Analyze";
+    }
+}
+
+
+/* ============================================================
+   MUSIC DOWNLOAD
+   ============================================================ */
+
+musicDownloadBtn.addEventListener(
+    "click",
+    downloadMusic
+);
+
+async function downloadMusic() {
+
+    const url =
+        musicUrlInput.value.trim();
+
+    if (!url) {
+
+        alert(
+            "Please analyze the Spotify URL again."
+        );
+
+        return;
+    }
+
+    musicDownloadBtn.disabled =
+        true;
+
+    const originalText =
+        musicDownloadBtn.textContent;
+
+    musicDownloadBtn.textContent =
+        "Preparing...";
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/music/download`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        url: url,
+                        format:
+                            musicFormat.value,
+                        bitrate:
+                            musicBitrate.value
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Music download failed."
+            );
+        }
+
+        if (!data.job_id) {
+
+            throw new Error(
+                "Server did not create a music download job."
+            );
+        }
+
+        await monitorMusicDownload(
+            data.job_id
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Nuvexa music download error:",
+            error
+        );
+
+        musicDownloadBtn.textContent =
+            originalText;
+
+        musicDownloadBtn.disabled =
+            false;
+
+        alert(
+            "This music could not be downloaded."
+        );
+    }
+}
+
+
+/* ============================================================
+   MONITOR MUSIC DOWNLOAD
+   ============================================================ */
+
+async function monitorMusicDownload(
+    jobId
+) {
+
+    while (true) {
+
+        await sleep(700);
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/music/download-status/${jobId}`
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Unable to check music download status."
+            );
+        }
+
+        if (
+            data.status === "starting"
+        ) {
+
+            musicDownloadBtn.textContent =
+                "Starting...";
+
+        } else if (
+            data.status === "processing"
+        ) {
+
+            musicDownloadBtn.textContent =
+                "Processing...";
+
+        } else if (
+            data.status === "downloading"
+        ) {
+
+            musicDownloadBtn.textContent =
+                `Downloading ${data.progress}%`;
+
+        } else if (
+            data.status === "completed"
+        ) {
+
+            musicDownloadBtn.textContent =
+                "Done ✓";
+
+            await fetchCompletedMusicFile(
+                jobId
+            );
+
+            await sleep(1500);
+
+            musicDownloadBtn.textContent =
+                "Download";
+
+            musicDownloadBtn.disabled =
+                false;
+
+            return;
+
+        } else if (
+            data.status === "error"
+        ) {
+
+            throw new Error(
+                "This music could not be downloaded."
+            );
+        }
+    }
+}
+
+
+/* ============================================================
+   FETCH COMPLETED MUSIC FILE
+   ============================================================ */
+
+async function fetchCompletedMusicFile(
+    jobId
+) {
+
+    const response =
+        await fetch(
+            `${API_BASE}/api/music/download-file/${jobId}`
+        );
+
+    if (!response.ok) {
+
+        let errorMessage =
+            "Unable to retrieve the completed music file.";
+
+        try {
+
+            const errorData =
+                await response.json();
+
+            errorMessage =
+                errorData.detail ||
+                errorMessage;
+
+        } catch {}
+
+        throw new Error(
+            errorMessage
+        );
+    }
+
+    const blob =
+        await response.blob();
+
+    const filename =
+        getFilenameFromResponse(
+            response
+        );
+
+    saveBlob(
+        blob,
+        filename ||
+            `${safeFilename(
+                musicTitle.textContent
+            )}.mp3`
+    );
+}
+
+
+/* ============================================================
+   CLOSE MUSIC RESULTS
+   ============================================================ */
+
+closeMusicResults.addEventListener(
+    "click",
+    () => {
+
+        musicResults.style.display =
+            "none";
+
+        musicUrlInput.value =
+            "";
+
+        musicTitle.textContent =
+            "Track title";
+
+        musicArtist.textContent =
+            "Artist";
+
+        musicThumbnail.removeAttribute(
+            "src"
+        );
+
+        musicThumbnail.style.display =
+            "block";
+
+        musicDownloadBtn.textContent =
+            "Download";
+
+        musicDownloadBtn.disabled =
+            false;
+
+        musicMode.style.display =
+            "block";
+
+        musicMode.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+);

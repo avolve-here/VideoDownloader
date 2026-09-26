@@ -2,3 +2,5 @@ fastapi==0.141.1
 uvicorn==0.53.0
 yt-dlp[default]==2026.8.19
 bgutil-ytdlp-pot-provider==2.0.0
+spotdl==4.5.2
+requests==2.32.5

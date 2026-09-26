@@ -2,30 +2,57 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Nuvexa — Download Videos & Audio | No Ads, No Sign Up</title>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Nuvexa — Download Videos & Audio | No Ads, No Sign Up
+    </title>
 
     <meta
         name="description"
         content="Download supported videos and audio online with Nuvexa. No ads, no sign-up, and a simple, fast downloading experience."
     >
 
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Nuvexa">
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <meta
+        name="author"
+        content="Nuvexa"
+    >
 
     <link
         rel="canonical"
         href="https://nuvexa-video-downloader.onrender.com/"
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
-    <link rel="icon" type="image/png" href="logo.png">
+    <link
+        rel="icon"
+        type="image/png"
+        href="logo.png"
+    >
+
 
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
     <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
@@ -37,9 +64,18 @@
         rel="stylesheet"
     >
 
+
     <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Nuvexa — Download Videos & Audio">
+
+    <meta
+        property="og:type"
+        content="website"
+    >
+
+    <meta
+        property="og:title"
+        content="Nuvexa — Download Videos & Audio"
+    >
 
     <meta
         property="og:description"
@@ -51,15 +87,21 @@
         content="https://nuvexa-video-downloader.onrender.com/"
     >
 
-    <meta property="og:site_name" content="Nuvexa">
+    <meta
+        property="og:site_name"
+        content="Nuvexa"
+    >
+
 
     <!-- Google Analytics -->
+
     <script
         async
         src="https://www.googletagmanager.com/gtag/js?id=G-RE4LP6J27V"
     ></script>
 
     <script>
+
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
@@ -67,80 +109,121 @@
         }
 
         gtag('js', new Date());
+
         gtag('config', 'G-RE4LP6J27V');
+
     </script>
 
 </head>
 
+
 <body>
 
+
     <!-- NAVBAR -->
-    <header class="navbar">
 
-        <div class="nav-container">
+<header class="navbar">
+    <div class="nav-container">
 
-            <a href="#" class="logo">
-                Nuvexa
-            </a>
+        <a href="#" class="logo">
+            Nuvexa
+        </a>
+
+        <div class="nav-right">
 
             <nav class="nav-links">
-
-                <a href="#home">
-                    Home
-                </a>
-
-                <a href="#downloader">
-                    Downloader
-                </a>
-
-                <a href="#supported">
-                    Supported Sites
-                </a>
-
-                <a href="#about">
-                    About
-                </a>
-
+                <a href="#home">Home</a>
+                <a href="#downloader">Downloader</a>
+                <a href="#supported">Supported Sites</a>
+                <a href="#about">About</a>
             </nav>
+
+            <button
+                type="button"
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Switch to dark mode"
+                title="Switch to dark mode"
+            >
+                <span id="themeIcon" aria-hidden="true">☾</span>
+            </button>
 
         </div>
 
-    </header>
+    </div>
+</header>
 
 
 
     <!-- HERO -->
+
     <main id="home">
 
         <section class="hero">
 
             <div class="hero-content">
 
-                <div class="downloader-mode video-mode" id="videoMode">
+                <div
+                    class="downloader-mode video-mode"
+                    id="videoMode"
+                >
 
                     <h1>
-                        Download Any Video
-                        <span>easily.</span>
+
+                        Download Any Video and Audio
+
+                        <span>
+                            easily.
+                        </span>
+
                     </h1>
 
+
                     <p>
+
                         Paste a supported media URL, choose your quality,
                         and download it in seconds.
+
                     </p>
+
 
                     <div class="supported-inline">
 
-                        <span>Instagram</span>
-                        <span>TikTok</span>
-                        <span>Reddit</span>
-                        <span>X</span>
-                        <span>Facebook</span>
-                        <span>Pinterest</span>
-                        <span>Vimeo</span>
+                        <span>
+                            Instagram
+                        </span>
+
+                        <span>
+                            TikTok
+                        </span>
+
+                        <span>
+                            Reddit
+                        </span>
+
+                        <span>
+                            X
+                        </span>
+
+                        <span>
+                            Facebook
+                        </span>
+
+                        <span>
+                            Pinterest
+                        </span>
+
+                        <span>
+                            Vimeo
+                        </span>
 
                     </div>
 
-                    <div class="url-box" id="downloader">
+
+                    <div
+                        class="url-box"
+                        id="downloader"
+                    >
 
                         <input
                             type="text"
@@ -148,6 +231,7 @@
                             placeholder="Paste Media URL; Instagram, Reddit, TikTok, X..."
                             autocomplete="off"
                         >
+
 
                         <button
                             type="button"
@@ -157,6 +241,7 @@
                             Paste
                         </button>
 
+
                         <button
                             type="button"
                             id="analyzeBtn"
@@ -165,6 +250,7 @@
                         </button>
 
                     </div>
+
 
                     <p class="input-note"></p>
 
@@ -177,6 +263,7 @@
 
 
         <!-- DOWNLOAD RESULTS -->
+
         <!-- Hidden until Analyze succeeds -->
 
         <section
@@ -199,11 +286,13 @@
 
                 </div>
 
+
                 <div class="results-actions">
 
                     <span class="download-another-text">
                         Download another video
                     </span>
+
 
                     <button
                         class="close-results"
@@ -222,6 +311,7 @@
 
             <div class="media-card">
 
+
                 <!-- VIDEO PREVIEW -->
 
                 <div class="preview-player">
@@ -232,6 +322,7 @@
                         playsinline
                         preload="metadata"
                     ></video>
+
 
                     <div
                         class="player-placeholder"
@@ -286,14 +377,18 @@
 
                         </div>
 
+
                         <strong>
                             MP4
                         </strong>
 
                     </div>
 
+
                     <div class="download-options">
+
                         <!-- Generated by JavaScript -->
+
                     </div>
 
                 </div>
@@ -318,14 +413,18 @@
 
                         </div>
 
+
                         <strong>
                             MP3
                         </strong>
 
                     </div>
 
+
                     <div class="download-options">
+
                         <!-- Generated by JavaScript -->
+
                     </div>
 
                 </div>
@@ -345,6 +444,7 @@
 
             <div class="section-container">
 
+
                 <div class="section-heading">
 
                     <span>
@@ -357,7 +457,9 @@
 
                 </div>
 
+
                 <div class="how-to-grid">
+
 
                     <!-- STEP 01 -->
 
@@ -366,6 +468,7 @@
                         <div class="step-number">
                             01
                         </div>
+
 
                         <div class="step-content">
 
@@ -378,6 +481,7 @@
                             </p>
 
                         </div>
+
 
                         <div class="step-image">
 
@@ -400,6 +504,7 @@
                             02
                         </div>
 
+
                         <div class="step-content">
 
                             <h3>
@@ -411,6 +516,7 @@
                             </p>
 
                         </div>
+
 
                         <div class="step-image">
 
@@ -433,6 +539,7 @@
                             03
                         </div>
 
+
                         <div class="step-content">
 
                             <h3>
@@ -444,6 +551,7 @@
                             </p>
 
                         </div>
+
 
                         <div class="step-image">
 
@@ -473,10 +581,11 @@
 
             <div class="section-container">
 
+
                 <div class="section-heading">
 
                     <span>
-                        COMPATIBILITY
+                        30+ PLATFORMS SUPPORTED
                     </span>
 
                     <h2>
@@ -489,41 +598,333 @@
 
                 <div class="platform-grid">
 
+
+                    <!-- YOUTUBE -->
+
                     <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/youtube"
+                            alt="YouTube logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            YouTube
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- INSTAGRAM -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/instagram"
+                            alt="Instagram logo"
+                            loading="lazy"
+                        >
 
                         <strong>
                             Instagram
                         </strong>
 
-                        <span>
-                            Supported media
-                        </span>
-
                     </div>
 
 
+
+                    <!-- TIKTOK -->
+
                     <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/tiktok"
+                            alt="TikTok logo"
+                            loading="lazy"
+                        >
 
                         <strong>
                             TikTok
                         </strong>
 
+                    </div>
+
+
+
+                    <!-- X -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/x"
+                            alt="X logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            X
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- REDDIT -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/reddit"
+                            alt="Reddit logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Reddit
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- FACEBOOK -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/facebook"
+                            alt="Facebook logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Facebook
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- VIMEO -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/vimeo"
+                            alt="Vimeo logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Vimeo
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- TWITCH -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/twitch"
+                            alt="Twitch logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Twitch
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- DAILYMOTION -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/dailymotion"
+                            alt="Dailymotion logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Dailymotion
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- PINTEREST -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/pinterest"
+                            alt="Pinterest logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Pinterest
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- RUMBLE -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/rumble"
+                            alt="Rumble logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Rumble
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- BILIBILI -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/bilibili"
+                            alt="Bilibili logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Bilibili
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- SOUNDCLOUD -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/soundcloud"
+                            alt="SoundCloud logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            SoundCloud
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- IMGUR -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/imgur"
+                            alt="Imgur logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Imgur
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- TUMBLR -->
+
+                    <div class="platform-card">
+
+                        <img
+                            src="https://cdn.simpleicons.org/tumblr"
+                            alt="Tumblr logo"
+                            loading="lazy"
+                        >
+
+                        <strong>
+                            Tumblr
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MORE PLATFORMS -->
+
+                <div class="more-platforms-card">
+
+
+                    <div class="more-platforms-text">
+
+                        <strong>
+                            And many more platforms supported!
+                        </strong>
+
                         <span>
-                            Supported media
+                            Download from hundreds of websites and services.
                         </span>
 
                     </div>
 
 
-                    <div class="platform-card">
 
-                        <strong>
-                            Direct URLs
-                        </strong>
+                    <div class="more-platform-logos">
 
-                        <span>
-                            Media files
-                        </span>
+
+                        <div class="more-platform-logo">
+
+                            <img
+                                src="https://cdn.simpleicons.org/snapchat"
+                                alt="Snapchat logo"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+
+                        <div class="more-platform-logo">
+
+                            <img
+                                src="https://cdn.simpleicons.org/linkedin"
+                                alt="LinkedIn logo"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+
+                        <div class="more-platform-logo">
+
+                            <img
+                                src="https://cdn.simpleicons.org/threads"
+                                alt="Threads logo"
+                                loading="lazy"
+                            >
+
+                        </div>
+
 
                     </div>
 
@@ -553,9 +954,13 @@
                 </h2>
 
                 <p>
+
                     Nuvexa Video Downloader is designed around one idea:
+
                     paste a link, select what you need,
+
                     and download it.
+
                 </p>
 
             </div>
@@ -571,6 +976,7 @@
     <footer>
 
         <div class="footer-container">
+
 
             <div class="footer-brand">
 
@@ -636,6 +1042,7 @@
 
     <script src="script.js"></script>
 
+
     <!-- TinyAdz -->
 
     <script
@@ -644,6 +1051,7 @@
         data-test-mode="false"
         async
     ></script>
+
 
 </body>
 
