@@ -1637,6 +1637,22 @@ body.dark-mode .download-option:hover {
     background: #202D32;
 }
 
+body.dark-mode .download-option {
+    background: #182228;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+body.dark-mode .download-option strong,
+body.dark-mode .download-option span {
+    color: var(--text);
+}
+
+body.dark-mode .download-option:hover {
+    background: #202D32;
+    border-color: var(--blue);
+}
+
 body.dark-mode .platform-card:hover {
     background: #1D292E;
 }
